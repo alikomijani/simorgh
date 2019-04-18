@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class List</title>
+</head>
+<body>
+<h1>
+    {{classroom.get_field_display}} {{classroom.get_level_display}} {{classroom.get_group_display}}
+</h1>
+<table>
+    <tr>
+        <th>{{teacher.user.first_name}}
+            {{teacher.user.last_name}}
+        </th>
+        <th>نام دبیر</th>
+    </tr>
+    {% for i in student_list %}
+    <tr>
+        <td>{{i.user.last_name}}</td>
+        <td>{{i.user.first_name}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
