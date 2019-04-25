@@ -27,7 +27,7 @@ class Classroom(models.Model):
     )
     branch = models.CharField(max_length=1, choices=CHOICE_GROUP)
     level_field = models.ForeignKey("LevelField", on_delete=models.SET_NULL, null=True)
-    education_year = models.CharField(max_length=20,null=True)
+    education_year = models.CharField(max_length=20, null=True)
     courses = models.ManyToManyField('Course', through='TeacherClassCourse', related_name='classrooms')
     teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms')
 
@@ -53,7 +53,6 @@ class Teacher(models.Model):
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE)
     profession = models.ManyToManyField('Course')
-    classroom = models.ManyToManyField(Classroom)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
