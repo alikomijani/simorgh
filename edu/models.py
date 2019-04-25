@@ -7,7 +7,9 @@ from datetime import datetime
 class Student(models.Model):
     student_id = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    classroom = models.ForeignKey('Classroom', on_delete=models.SET_NULL, null=True)
+    courses = models.ManyToManyField("Course", through='StudentCourse', related_name='students')
+    classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students')
+    last_modified_date = models.DateTimeField()
 
     class Meta:
         verbose_name = 'دانش آموز'
@@ -18,33 +20,21 @@ class Student(models.Model):
 
 
 class Classroom(models.Model):
-    FIRST, SECOND, THIRD = '1', '2', '3',
-    CHOICE_LEVEL = (
-        (FIRST, 'پایه اول'),
-        (SECOND, 'پایه دوم'),
-        (THIRD, 'پایه سوم'),
-    )
-    level = models.CharField(max_length=1, choices=CHOICE_LEVEL)
     A, B = 'A', 'B'
     CHOICE_GROUP = (
         (A, 'کلاس الف'),
         (B, 'کلاس ب'),
     )
-    group = models.CharField(max_length=1, choices=CHOICE_GROUP)
-    HUMANITY, MATH, NATURAL = 'HU', 'MA', 'NA'
-    CHOICE_FIELD = (
-        (HUMANITY, 'علوم انسانی'),
-        (MATH, 'علوم ریاضی'),
-        (NATURAL, 'علوم تجربی'),
-    )
-    field = models.CharField(max_length=2, choices=CHOICE_FIELD)
+    branch = models.CharField(max_length=1, choices=CHOICE_GROUP)
+    level_field = models.ForeignKey("LevelField", on_delete=models.SET_NULL, null=True)
+    education_year = models.CharField(max_length=20)
 
     class Meta:
         verbose_name = 'کلاس'
         verbose_name_plural = 'کلاس ها'
 
     def __str__(self):
-        return self.get_field_display() + ' ' + self.get_level_display() + ' ' + self.get_group_display()
+        pass
 
 
 class Teacher(models.Model):
@@ -59,8 +49,8 @@ class Teacher(models.Model):
         (PHD, 'دکتری'),
         (DIPLOMA, 'دیپلم'),
     )
-    education_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE)
-    profession = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True)
+    edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE)
+    profession = models.ManyToManyField('Course')
     classroom = models.ManyToManyField(Classroom)
 
     def __str__(self):
@@ -77,6 +67,8 @@ class Teacher(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=20)
+    unit = models.IntegerField()
+    level_field = models.ForeignKey('LevelField', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -84,3 +76,34 @@ class Course(models.Model):
     class Meta:
         verbose_name = 'درس'
         verbose_name_plural = 'دروس'
+
+
+class LevelField(models.Model):
+    FIRST, SECOND, THIRD = '1', '2', '3',
+    CHOICE_LEVEL = (
+        (FIRST, 'پایه اول'),
+        (SECOND, 'پایه دوم'),
+        (THIRD, 'پایه سوم'),
+    )
+    level = models.CharField(max_length=1, choices=CHOICE_LEVEL)
+    HUMANITY, MATH, NATURAL = 'HU', 'MA', 'NA'
+    CHOICE_FIELD = (
+        (HUMANITY, 'علوم انسانی'),
+        (MATH, 'علوم ریاضی'),
+        (NATURAL, 'علوم تجربی'),
+    )
+    field = models.CharField(max_length=2, choices=CHOICE_FIELD)
+
+
+class StudentCourse(models.Model):
+    student = models.ForeignKey('Student', related_name='student_courses', on_delete=models.SET_NULL, null=True)
+    course = models.ForeignKey('Course', related_name='student_courses', on_delete=models.SET_NULL, null=True)
+    final_grade = models.FloatField()
+    mid_grade = models.FloatField()
+
+
+class Register(models.Model):
+    classroom = models.ForeignKey('Classroom', related_name='registers', on_delete=models.SET_NULL, null=True)
+    student = models.ForeignKey('Student', related_name='registers', on_delete=models.SET_NULL, null=True)
+
+    student = models.ManyToManyField()
