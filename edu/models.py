@@ -20,9 +20,9 @@ class Student(models.Model):
 
 
 class Teacher(models.Model):
-    teacher_id = models.IntegerField()
+    teacher_id = models.IntegerField(verbose_name='کد پرسنلی')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    hire_date = models.DateField()
+    hire_date = models.DateField(verbose_name='تاریخ استخدام')
     DIPLOMA, ASSOCIATE, BACHELOR, MASTER, PHD = 'DI', 'FD', 'LI', 'FL', 'DR'
     CHOICE_DEGREE = (
         (ASSOCIATE, 'کاردانی'),

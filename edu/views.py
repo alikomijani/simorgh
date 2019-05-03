@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from .models import Student, Teacher, Course, Classroom
-from django.views.generic.edit import FormView
-from .forms import StudentForm
 from django.views.generic import ListView
-from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
+from django.views.generic import CreateView
 
 
 # Create your views here.
@@ -18,24 +16,14 @@ def get_class_students(request, class_id):
                   {'teacher': teacher, 'student_list': student_list, 'classroom': classroom})
 
 
-class FormRegisterStudent(FormView):
-    template_name = 'edu/register.html'
-    form_class = StudentForm
-    success_url = '/edu/register/'
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+class StudentCreateView(CreateView):
+    model = Student
+    fields = ['student_id', 'user', 'last_modified_date']
+    success_url = '../../list'
 
 
 class StudentListView(ListView):
     model = Student
-
-
-    def get_context_data(self, **kwargs):
-        context = super(StudentListView, self).get_context_data(**kwargs)
-        context['now'] = timezone.now()
-        return context
 
 
 class StudentDetailView(DetailView):
@@ -44,4 +32,27 @@ class StudentDetailView(DetailView):
 
 class StudentUpdateView(UpdateView):
     model = Student
-    fields = ['student_id']
+    fields = ['student_id', 'user', 'last_modified_date']
+    success_url = '../../list'
+
+
+#  Teacher class view
+
+class TeacherCreateView(CreateView):
+    model = Teacher
+    fields = ['teacher_id', 'hire_date', 'user', 'edu_degree', 'profession']
+    success_url = '../../list'
+
+
+class TeacherListView(ListView):
+    model = Teacher
+
+
+class TeacherDetailView(DetailView):
+    model = Teacher
+
+
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    fields = ['teacher_id', 'user', 'hire_date', 'edu_degree', 'profession']
+    success_url = '../../list'

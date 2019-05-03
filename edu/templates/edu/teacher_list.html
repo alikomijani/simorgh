@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 
-    <title>student list</title>
+    <title>لیست آموزگاران</title>
     <div class="container" style="margin-top: 20px;">
     <div>
-    <p> لیست دانش آموزان</p>
+    <p> لیست آموزگاران</p>
 </div>
         {% load widget_tweaks %}
         <table class='table'>
@@ -20,22 +20,22 @@
                 <th>مشاهده مشخصات</th>
                 <th>ویرایش</th>
             </tr>
-            {% for student in student_list %}
+            {% for teacher in teacher_list %}
                 <tr>
                     <th scope="row">
                         {{ forloop.counter }}
                     </th>
                     <td>
-                        {{ student.user.first_name }}
+                        {{ teacher.user.first_name }}
                     </td>
                     <td>
-                        {{ student.user.last_name }}
+                        {{ teacher.user.last_name }}
                     </td>
                     <td>
-                         <a href="{% url 'StudentEdit' student.pk %}">ویرایش</a>
+                         <a href="{% url 'TeacherEdit' teacher.pk %}">ویرایش</a>
                     </td>
                     <td>
-                        <a href="{% url 'StudentDetail' student.pk %}"> مشخصات</a>
+                        <a href="{% url 'TeacherDetail' teacher.pk %}"> مشخصات</a>
                     </td>
                 </tr>
             {% endfor %}
