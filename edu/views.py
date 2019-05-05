@@ -4,6 +4,8 @@ from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
+from django.db.models import Q
+from .forms import TeacherSearchForm
 
 
 # Create your views here.
@@ -46,6 +48,23 @@ class TeacherCreateView(CreateView):
 
 class TeacherListView(ListView):
     model = Teacher
+    form_class = TeacherSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(TeacherListView, self).get_context_data(**kwargs)
+        context.update({
+            'search': self.form_class()
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        first_name = self.request.GET.get('first_name')
+        last_name = self.request.GET.get('last_name')
+        if self.request.GET and any([first_name, last_name]):
+            queryset = queryset.filter(
+                Q(user__first_name=first_name) | Q(user__last_name=last_name))
+        return queryset
 
 
 class TeacherDetailView(DetailView):
