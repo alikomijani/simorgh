@@ -1,7 +1,7 @@
-from django.conf.urls import url
 from . import views
+from django.conf.urls import url
 
-urlpatterns = [  # ex: /polls/5/
+urlpatterns = [
     url(r'^(?P<class_id>[0-9]+)/$', views.get_class_students, name='get_class_students'),
     url(r'^student/create/$', views.StudentCreateView.as_view(), name='StudentCreateView'),
     url(r'^student/list/$', views.StudentListView.as_view(), name='StudentListView'),
@@ -11,4 +11,7 @@ urlpatterns = [  # ex: /polls/5/
     url(r'^teacher/list/$', views.TeacherListView.as_view(), name='TeacherListView'),
     url(r'^teacher/detail/(?P<pk>[0-9]+)/$', views.TeacherDetailView.as_view(), name='TeacherDetail'),
     url(r'^teacher/edit/(?P<pk>[0-9]+)/$', views.TeacherUpdateView.as_view(), name='TeacherEdit'),
+    url(r'^student/api/detail/(?P<pk>[0-9]+)/$', views.get_student_rest_api),
+    url(r'^student/api/detail/all/$', views.get_all_student_rest_api)
+
 ]

@@ -1,14 +1,38 @@
+
 from django.shortcuts import render
-from .models import Student, Teacher, Course, Classroom
+from .models import Student, Teacher, Classroom
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
 from .forms import TeacherSearchForm
+from rest_framework import viewsets
+from .serializers import StudentSerializer
+from django.http import JsonResponse
 
 
 # Create your views here.
+def get_student_rest_api(request, pk):
+    student = Student.objects.filter(student_id=pk)
+    serial = StudentSerializer(student, many=True)
+    return JsonResponse(serial.data, safe=False)
+
+
+def get_all_student_rest_api(request):
+    student = Student.objects.all()
+    serial = StudentSerializer(student, many=True)
+    print(JsonResponse(serial.data, safe=False).serialize())
+    return JsonResponse(serial.data, safe=False)
+
+
+class StudentViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
 
 def get_class_students(request, class_id):
     classroom = Classroom.objects.filter(id=class_id).first()

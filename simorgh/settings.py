@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'rest_framework',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -38,6 +39,13 @@ INSTALLED_APPS = [
     'edu',
     'widget_tweaks',
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+
+
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
