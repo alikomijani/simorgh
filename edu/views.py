@@ -1,5 +1,4 @@
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Student, Teacher, Classroom
 from django.views.generic import ListView
 from django.views.generic import DetailView
@@ -10,6 +9,12 @@ from .forms import TeacherSearchForm
 from rest_framework import viewsets
 from .serializers import StudentSerializer
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
+@login_required(login_url='/login/')
+def index(request):
+    return render(request, 'edu/index.html')
 
 
 # Create your views here.
@@ -44,12 +49,16 @@ def get_class_students(request, class_id):
 
 class StudentCreateView(CreateView):
     model = Student
-    fields = ['student_id', 'user', 'last_modified_date']
+    fields = ['student_id', 'user']
     success_url = '../../list'
 
 
 class StudentListView(ListView):
     model = Student
+
+
+class UserListView(ListView):
+    model = User
 
 
 class StudentDetailView(DetailView):

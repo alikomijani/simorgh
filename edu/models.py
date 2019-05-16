@@ -5,11 +5,13 @@ from datetime import datetime
 
 # Create your models here.
 class Student(models.Model):
-    student_id = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    courses = models.ManyToManyField("Course", through='StudentCourse', related_name='students')
-    classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students')
-    last_modified_date = models.DateTimeField(null=True)
+    student_id = models.IntegerField(verbose_name='شماره دانش آموزی')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='نام کاربری')
+    courses = models.ManyToManyField("Course", through='StudentCourse', related_name='students',
+                                     verbose_name='دورس ')
+    classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students',
+                                        verbose_name='کلاس ها')
+    last_modified_date = models.DateTimeField(null=True,verbose_name='تاریخ آخرین ویرایش')
 
     class Meta:
         verbose_name = 'دانش آموز'
@@ -21,7 +23,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     teacher_id = models.IntegerField(verbose_name='کد پرسنلی')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='نام کاربری')
     hire_date = models.DateField(verbose_name='تاریخ استخدام')
     DIPLOMA, ASSOCIATE, BACHELOR, MASTER, PHD = 'DI', 'FD', 'LI', 'FL', 'DR'
     CHOICE_DEGREE = (
@@ -31,8 +33,8 @@ class Teacher(models.Model):
         (PHD, 'دکتری'),
         (DIPLOMA, 'دیپلم'),
     )
-    edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE)
-    profession = models.ManyToManyField('Course')
+    edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
+    profession = models.ManyToManyField('Course', verbose_name='تخصص')
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -53,14 +55,14 @@ class LevelField(models.Model):
         (SECOND, 'پایه دوم'),
         (THIRD, 'پایه سوم'),
     )
-    level = models.CharField(max_length=1, choices=CHOICE_LEVEL)
+    level = models.CharField(max_length=1, choices=CHOICE_LEVEL,verbose_name='پایه تحصیلی')
     HUMANITY, MATH, NATURAL = 'HU', 'MA', 'NA'
     CHOICE_FIELD = (
         (HUMANITY, 'علوم انسانی'),
         (MATH, 'علوم ریاضی'),
         (NATURAL, 'علوم تجربی'),
     )
-    field = models.CharField(max_length=2, choices=CHOICE_FIELD)
+    field = models.CharField(max_length=2, choices=CHOICE_FIELD,verbose_name='رشته تحصیلی')
 
     class Meta:
         verbose_name = 'لیست پایه های تحصیلی'
@@ -76,11 +78,11 @@ class Classroom(models.Model):
         (A, 'کلاس الف'),
         (B, 'کلاس ب'),
     )
-    branch = models.CharField(max_length=1, choices=CHOICE_GROUP)
-    level_field = models.ForeignKey("LevelField", on_delete=models.SET_NULL, null=True)
-    education_year = models.CharField(max_length=20, null=True)
-    courses = models.ManyToManyField('Course', through='TeacherClassCourse', related_name='classrooms')
-    teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms')
+    branch = models.CharField(max_length=1, choices=CHOICE_GROUP,verbose_name='شماره کلاس')
+    level_field = models.ForeignKey("LevelField", on_delete=models.SET_NULL, null=True,verbose_name='مقطع تحصیلی')
+    education_year = models.CharField(max_length=20, null=True,verbose_name='سال تحصیلی')
+    courses = models.ManyToManyField('Course', through='TeacherClassCourse', related_name='classrooms',verbose_name='دروس')
+    teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms',verbose_name='اساتید')
 
     class Meta:
         verbose_name = 'کلاس'
@@ -91,9 +93,9 @@ class Classroom(models.Model):
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=20)
-    unit = models.IntegerField(null=True)
-    level_field = models.ForeignKey('LevelField', on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=20,verbose_name='نام درس')
+    unit = models.IntegerField(null=True,verbose_name='تعداد واحد')
+    level_field = models.ForeignKey('LevelField', on_delete=models.SET_NULL, null=True,verbose_name='مقطع تحصیلی')
 
     def __str__(self):
         return self.name
