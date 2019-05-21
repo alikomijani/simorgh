@@ -3,12 +3,10 @@
 {% block title %}
     {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
 {% endblock %}
-
+{% block dashboard-title %}لیست کاربران{% endblock %}
 {% block content %}
     <div class="container" style="margin-top: 20px;">
-        <div>
-            <p> لیست کاربران</p>
-        </div>
+
         {% load widget_tweaks %}
         <table class='table' style="text-align: center;">
             <tr>

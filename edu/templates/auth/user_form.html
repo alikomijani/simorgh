@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block title %}
+    {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
+{% endblock %}
+    {% block dashboard-title %}فرم ثبت نام کاربر{% endblock %}
+{% block content %}
+
+    <div class="container" style="margin-top: 20px;">
+
+
+        {% load widget_tweaks %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+
+
+            <div class="form-group">
+                <label for="id_username">نام کاربری:</label>
+                <input type="text" name="username" maxlength="150" class="form-control" required id="id_username"/>
+
+                <small class="form-text text-muted">Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+                    only.
+                </small>
+
+            </div>
+            <div class="form-group">
+                <label for="id_password" class="input-group-addon">کلمه عبور:</label>
+                <input type="text"  name="password" maxlength="128" class="form-control" required
+                       id="id_password"/>
+
+            </div>
+            <div class="form-group">
+                <label for="id_first_name">نام:</label>
+                <input type="text" name="first_name" maxlength="30" class="form-control" id="id_first_name"/>
+
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_name">نام خانوادگی:</label>
+                <input type="text" name="last_name" maxlength="30" class="form-control" id="id_last_name"/>
+
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">آدرس ایمیل:</label>
+                <input type="email" name="email" maxlength="254" class="form-control" id="id_email"/>
+
+            </div>
+
+            <div class="form-group">
+                <label for="id_is_superuser">آیا این کاربر ادمین است؟
+                    <input type="checkbox" name="is_superuser" class="checkbox" id="id_is_superuser"/></label>
+                <small class="form-text text-muted">انتخاب این گزینه تمامی دسترسی ها را به کاربر می دهد.
+                </small>
+                <br>
+                <label for="id_is_staff"> آیا این کاربر از کارمندان است؟
+                    <input type="checkbox" name="is_staff" class="checkbox" id="id_is_staff"/></label>
+                <small class="form-text text-muted">تعیین اینکه کاربر می تواند دسترسی های مدیریتی داشته باشد یا نه؟
+                </small>
+                <br>
+                <label for="id_is_active">فعال:
+                    <input type="checkbox" name="is_active" class="checkbox" id="id_is_active" checked/></label>
+                <small class="form-text text-muted">فعال کردن کاربر، از غیر فعال کردن کاربر به جای حذف آن استفاده کنید.
+                </small>
+
+            </div>
+
+            <div class="form-group">
+                <label for="id_groups">گروه ها:</label>
+                <select name="groups" class="form-control" id="id_groups" multiple="multiple">
+                </select>
+
+                <small class="form-text text-muted">با انتخاب هر گروه تمامی دسترسی های آن گروه به کاربر داده میشود.
+                </small>
+
+            </div>
+
+            <div class="form-group">
+                <label for="id_user_permissions">دسترسی های کاربر</label>
+                <select name="user_permissions" class="form-control" id="id_user_permissions" multiple="multiple">
+                    <option value="1">admin | log entry | Can add log entry</option>
+
+                    <option value="2">admin | log entry | Can change log entry</option>
+
+                    <option value="3">admin | log entry | Can delete log entry</option>
+
+                    <option value="7">auth | group | Can add group</option>
+
+                    <option value="8">auth | group | Can change group</option>
+
+                    <option value="9">auth | group | Can delete group</option>
+
+                    <option value="4">auth | permission | Can add permission</option>
+
+                    <option value="5">auth | permission | Can change permission</option>
+
+                    <option value="6">auth | permission | Can delete permission</option>
+
+                    <option value="10">auth | user | Can add user</option>
+
+                    <option value="11">auth | user | Can change user</option>
+
+                    <option value="12">auth | user | Can delete user</option>
+
+                    <option value="13">contenttypes | content type | Can add content type</option>
+
+                    <option value="14">contenttypes | content type | Can change content type</option>
+
+                    <option value="15">contenttypes | content type | Can delete content type</option>
+
+                    <option value="19">edu | کلاس | Can add کلاس</option>
+
+                    <option value="20">edu | کلاس | Can change کلاس</option>
+
+                    <option value="21">edu | کلاس | Can delete کلاس</option>
+
+                    <option value="22">edu | درس | Can add درس</option>
+
+                    <option value="23">edu | درس | Can change درس</option>
+
+                    <option value="24">edu | درس | Can delete درس</option>
+
+                    <option value="31">edu | لیست پایه های تحصیلی | Can add level field</option>
+
+                    <option value="32">edu | لیست پایه های تحصیلی | Can change level field</option>
+
+                    <option value="33">edu | لیست پایه های تحصیلی | Can delete level field</option>
+
+                    <option value="34">edu | register | Can add register</option>
+
+                    <option value="35">edu | register | Can change register</option>
+
+                    <option value="36">edu | register | Can delete register</option>
+
+                    <option value="25">edu | دانش آموز | Can add دانش آموز</option>
+
+                    <option value="26">edu | دانش آموز | Can change دانش آموز</option>
+
+                    <option value="27">edu | دانش آموز | Can delete دانش آموز</option>
+
+                    <option value="37">edu | student course | Can add student course</option>
+
+                    <option value="38">edu | student course | Can change student course</option>
+
+                    <option value="39">edu | student course | Can delete student course</option>
+
+                    <option value="28">edu | آموزگار | Can add آموزگار</option>
+
+                    <option value="29">edu | آموزگار | Can change آموزگار</option>
+
+                    <option value="30">edu | آموزگار | Can delete آموزگار</option>
+
+                    <option value="40">edu | teacher class course | Can add teacher class course</option>
+
+                    <option value="41">edu | teacher class course | Can change teacher class course</option>
+
+                    <option value="42">edu | teacher class course | Can delete teacher class course</option>
+
+                    <option value="16">sessions | session | Can add session</option>
+
+                    <option value="17">sessions | session | Can change session</option>
+
+                    <option value="18">sessions | session | Can delete session</option>
+
+                </select>
+
+                <small class="form-text text-muted">در اینجا دسترسی های کاربر را مشخص کنید</small>
+
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">ثبت کاربر</button>
+
+        </form>
+    </div>
+{% endblock %}

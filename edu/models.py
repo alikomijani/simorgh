@@ -6,13 +6,13 @@ from datetime import datetime
 # Create your models here.
 class Student(models.Model):
     student_id = models.IntegerField(verbose_name='شماره دانش آموزی')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='نام کاربری')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری',primary_key=True)
     courses = models.ManyToManyField("Course", through='StudentCourse', related_name='students',
                                      verbose_name='دورس ')
     classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students',
                                         verbose_name='کلاس ها')
     last_modified_date = models.DateTimeField(null=True,verbose_name='تاریخ آخرین ویرایش')
-
+    photo = models.ImageField(upload_to='student_profiles', null=True)
     class Meta:
         verbose_name = 'دانش آموز'
         verbose_name_plural = 'دانش آموزان'
@@ -23,7 +23,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     teacher_id = models.IntegerField(verbose_name='کد پرسنلی')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='نام کاربری')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری',primary_key=True)
     hire_date = models.DateField(verbose_name='تاریخ استخدام')
     DIPLOMA, ASSOCIATE, BACHELOR, MASTER, PHD = 'DI', 'FD', 'LI', 'FL', 'DR'
     CHOICE_DEGREE = (
@@ -35,7 +35,7 @@ class Teacher(models.Model):
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
     profession = models.ManyToManyField('Course', verbose_name='تخصص')
-
+    photo = models.ImageField(upload_to='teacher_profiles', null=True)
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
 

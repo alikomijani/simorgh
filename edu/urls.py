@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^student/create/$', views.StudentCreateView.as_view(), name='StudentCreateView'),
     url(r'^student/list/$', views.StudentListView.as_view(), name='StudentListView'),
     url(r'^user/list/$', views.UserListView.as_view(), name='UserListView'),
+    url(r'^user/create/$', views.UserCreateView.as_view(), name='UserCreateView'),
     url(r'^student/detail/(?P<pk>[0-9]+)/$', views.StudentDetailView.as_view(), name='StudentDetail'),
     url(r'^student/edit/(?P<pk>[0-9]+)/$', views.StudentUpdateView.as_view(), name='StudentEdit'),
     url(r'^teacher/create/$', views.TeacherCreateView.as_view(), name='TeacherCreateView'),

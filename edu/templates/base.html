@@ -14,7 +14,8 @@
     <!-- Custom fonts for this template-->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
-    <link href=" {% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <!-- Custom styles for this template-->
     <link rel="stylesheet" href="{% static 'css/edu/style.css' %}">
@@ -30,7 +31,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'dashboard' %}  ">
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
@@ -42,7 +43,7 @@
 
         <!-- Heading -->
         <div class="sidebar-heading">
-            پنل مدیریت
+            پنل مدیریت کاربران سایت
         </div>
 
         <!-- Nav Item - Pages Collapse Menu -->
@@ -55,7 +56,7 @@
             <div id="collapseUsers" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">منوی مدیریت کاربران</h6>
-                    <a class="collapse-item" href="{% url 'StudentCreateView' %}">تعریف کاربر</a>
+                    <a class="collapse-item" href="{% url 'UserCreateView' %}">تعریف کاربر</a>
                     <a class="collapse-item" href="{% url 'UserListView' %}"> لیست کاربران</a>
                 </div>
             </div>
@@ -103,7 +104,6 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header"> منوی مدیریت والدین</h6>
                     <a class="collapse-item" href="utilities-color.html">تعریف والدین </a>
-                    <a class="collapse-item" href="utilities-border.html">ویرایش والدین</a>
                     <a class="collapse-item" href="utilities-animation.html">لیست والدین</a>
                 </div>
             </div>
@@ -363,7 +363,7 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    <h1 class="h3 mb-0 text-gray-800">{% block dashboard-title %}{% endblock %}</h1>
                     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-download fa-sm text-white-50"></i> فیلتر</a>
                 </div>
@@ -374,14 +374,13 @@
                 <div class="row"> {% block content %}{% endblock %}</div>
 
 
-
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2019</span>
+                            <span>تمامی حقوق این وب سایت متعلق به علی کمیجانی می باشد</span>
                         </div>
                     </div>
                 </footer>

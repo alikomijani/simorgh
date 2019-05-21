@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'edu/index.html')
@@ -49,8 +50,8 @@ def get_class_students(request, class_id):
 
 class StudentCreateView(CreateView):
     model = Student
-    fields = ['student_id', 'user']
-    success_url = '../../list'
+    fields = ['student_id', 'user', 'photo']
+    success_url = '../list'
 
 
 class StudentListView(ListView):
@@ -61,6 +62,12 @@ class UserListView(ListView):
     model = User
 
 
+class UserCreateView(CreateView):
+    model = User
+    fields = '__all__'
+    success_url = '../list'
+
+
 class StudentDetailView(DetailView):
     model = Student
 
@@ -68,15 +75,15 @@ class StudentDetailView(DetailView):
 class StudentUpdateView(UpdateView):
     model = Student
     fields = ['student_id', 'user', 'last_modified_date']
-    success_url = '../../list'
+    success_url = '../list'
 
 
 #  Teacher class view
 
 class TeacherCreateView(CreateView):
     model = Teacher
-    fields = ['teacher_id', 'hire_date', 'user', 'edu_degree', 'profession']
-    success_url = '../../list'
+    fields = ['teacher_id', 'hire_date', 'user', 'edu_degree', 'profession', 'photo']
+    success_url = '../list'
 
 
 class TeacherListView(ListView):
@@ -107,4 +114,4 @@ class TeacherDetailView(DetailView):
 class TeacherUpdateView(UpdateView):
     model = Teacher
     fields = ['teacher_id', 'user', 'hire_date', 'edu_degree', 'profession']
-    success_url = '../../list'
+    success_url = '../list'
