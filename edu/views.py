@@ -5,7 +5,7 @@ from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
-from .forms import TeacherSearchForm
+from .forms import TeacherSearchForm , StudentForm
 from rest_framework import viewsets
 from .serializers import StudentSerializer
 from django.http import JsonResponse
@@ -52,10 +52,9 @@ class StudentCreateView(CreateView):
     model = Student
     fields = ['student_id', 'user', 'photo']
     success_url = '../list'
-
-
-class StudentListView(ListView):
-    model = Student
+    def form_valid(self, form):
+        form.instance.last_modified_date = self.request.user
+        return super(StudentCreateView, self).form_valid(form)
 
 
 class UserListView(ListView):
@@ -67,6 +66,16 @@ class UserCreateView(CreateView):
     fields = '__all__'
     success_url = '../list'
 
+
+class StudentListView(ListView):
+    model = Student
+    form_class = StudentForm
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Student.objects.filter(student_id=query)
+        else:
+            return Student.objects.all()
 
 class StudentDetailView(DetailView):
     model = Student
@@ -87,6 +96,7 @@ class TeacherCreateView(CreateView):
 
 
 class TeacherListView(ListView):
+    # context_object_name = 'teachers'
     model = Teacher
     form_class = TeacherSearchForm
 
