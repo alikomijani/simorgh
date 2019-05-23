@@ -5,7 +5,7 @@ from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
-from .forms import TeacherSearchForm , StudentForm
+from .forms import TeacherSearchForm, StudentSearchForm
 from rest_framework import viewsets
 from .serializers import StudentSerializer
 from django.http import JsonResponse
@@ -52,6 +52,7 @@ class StudentCreateView(CreateView):
     model = Student
     fields = ['student_id', 'user', 'photo']
     success_url = '../list'
+
     def form_valid(self, form):
         form.instance.last_modified_date = self.request.user
         return super(StudentCreateView, self).form_valid(form)
@@ -69,13 +70,24 @@ class UserCreateView(CreateView):
 
 class StudentListView(ListView):
     model = Student
-    form_class = StudentForm
+    form_class = StudentSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentListView, self).get_context_data(**kwargs)
+        context.update({
+            'search': self.form_class()
+        })
+        return context
+
     def get_queryset(self):
-        query = self.request.GET.get('q')
-        if query:
-            return Student.objects.filter(student_id=query)
-        else:
-            return Student.objects.all()
+        queryset = super().get_queryset()
+        first_name = self.request.GET.get('first_name')
+        last_name = self.request.GET.get('last_name')
+        if self.request.GET and any([first_name, last_name]):
+            queryset = queryset.filter(
+                Q(user__first_name__icontains=first_name) & Q(user__last_name__icontains=last_name))
+        return queryset
+
 
 class StudentDetailView(DetailView):
     model = Student
@@ -113,7 +125,7 @@ class TeacherListView(ListView):
         last_name = self.request.GET.get('last_name')
         if self.request.GET and any([first_name, last_name]):
             queryset = queryset.filter(
-                Q(user__first_name=first_name) | Q(user__last_name=last_name))
+                Q(user__first_name__icontains=first_name) & Q(user__last_name__icontains=last_name))
         return queryset
 
 

@@ -4464,7 +4464,7 @@ input[type="button"].btn-block {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  padding-left: 0;
+  padding-right: 0;
   margin-bottom: 0;
   list-style: none;
 }
@@ -11097,7 +11097,7 @@ a:focus {
   top: 2px;
 }
 .nav-item{
-  right: -40px;
+  right: 0px;
 }
 .sidebar .nav-item .collapse .collapse-inner {
   border-radius: 0.35rem;
@@ -11184,6 +11184,8 @@ a:focus {
 .sidebar.toggled {
   width: 0 !important;
   overflow: hidden;
+  padding: 0px;
+
 }
 
 .sidebar.toggled #sidebarToggle::after {
@@ -11192,7 +11194,7 @@ a:focus {
   margin-left: 0.25rem;
 }
 .sidebar-brand{
-  margin-right: -70px;
+  margin-right: 0px;
 }
 .sidebar .sidebar-brand {
   height: 4.375rem;
@@ -11223,7 +11225,7 @@ a:focus {
   padding: 0 1rem;
   font-weight: 800;
   font-size: 0.65rem;
-  margin-right: -42px;
+
 }
 
 @media (min-width: 768px) {
@@ -11292,6 +11294,7 @@ a:focus {
   .sidebar.toggled {
     overflow: visible;
     width: 6.5rem !important;
+
   }
   .sidebar.toggled .nav-item .collapse {
     position: absolute;
