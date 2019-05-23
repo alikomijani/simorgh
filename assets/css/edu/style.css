@@ -11163,7 +11163,6 @@ a:focus {
   text-align: center;
   margin-bottom: 1rem;
   cursor: pointer;
-  margin-right: -50px;
 }
 
 .sidebar #sidebarToggle::after {

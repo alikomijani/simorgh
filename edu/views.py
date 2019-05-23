@@ -5,39 +5,15 @@ from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
-from .forms import TeacherSearchForm, StudentSearchForm
-from rest_framework import viewsets
-from .serializers import StudentSerializer
-from django.http import JsonResponse
+from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'edu/index.html')
-
-
-# Create your views here.
-def get_student_rest_api(request, pk):
-    student = Student.objects.filter(student_id=pk)
-    serial = StudentSerializer(student, many=True)
-    return JsonResponse(serial.data, safe=False)
-
-
-def get_all_student_rest_api(request):
-    student = Student.objects.all()
-    serial = StudentSerializer(student, many=True)
-    print(JsonResponse(serial.data, safe=False).serialize())
-    return JsonResponse(serial.data, safe=False)
-
-
-class StudentViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
 
 
 def get_class_students(request, class_id):
@@ -48,24 +24,50 @@ def get_class_students(request, class_id):
                   {'teacher': teacher, 'student_list': student_list, 'classroom': classroom})
 
 
-class StudentCreateView(CreateView):
-    model = Student
-    fields = ['student_id', 'user', 'photo']
-    success_url = '../list'
-
-    def form_valid(self, form):
-        form.instance.last_modified_date = self.request.user
-        return super(StudentCreateView, self).form_valid(form)
-
-
 class UserListView(ListView):
     model = User
+    form_class = UserSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(UserListView, self).get_context_data(**kwargs)
+        context.update({
+            'search': self.form_class
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        first_name = self.request.GET.get('first_name')
+        last_name = self.request.GET.get('last_name')
+        if self.request.GET and any([first_name, last_name]):
+            queryset = queryset.filter(
+                Q(first_name__icontains=first_name) & Q(last_name__icontains=last_name))
+        return queryset
 
 
 class UserCreateView(CreateView):
     model = User
     fields = '__all__'
-    success_url = '../list'
+
+    def get_success_url(self):
+        return reverse('UserListView')
+
+
+class UserEditView(UpdateView):
+    model = User
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse('UserListView')
+
+
+# Student Views
+class StudentCreateView(CreateView):
+    model = Student
+    form_class = StudentForm
+
+    def get_success_url(self):
+        return reverse('StudentListView')
 
 
 class StudentListView(ListView):
@@ -95,16 +97,28 @@ class StudentDetailView(DetailView):
 
 class StudentUpdateView(UpdateView):
     model = Student
-    fields = ['student_id', 'user', 'last_modified_date']
-    success_url = '../list'
+    form_class = StudentForm
+
+    def get_success_url(self):
+        return reverse('StudentListView')
 
 
 #  Teacher class view
 
 class TeacherCreateView(CreateView):
     model = Teacher
-    fields = ['teacher_id', 'hire_date', 'user', 'edu_degree', 'profession', 'photo']
-    success_url = '../list'
+    form_class = TeacherForm
+
+    def get_success_url(self):
+        return reverse('TeacherListView')
+
+
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    form_class = TeacherForm
+
+    def get_success_url(self):
+        return reverse('TeacherListView')
 
 
 class TeacherListView(ListView):
@@ -131,9 +145,3 @@ class TeacherListView(ListView):
 
 class TeacherDetailView(DetailView):
     model = Teacher
-
-
-class TeacherUpdateView(UpdateView):
-    model = Teacher
-    fields = ['teacher_id', 'user', 'hire_date', 'edu_degree', 'profession']
-    success_url = '../list'

@@ -6,7 +6,21 @@
 {% block dashboard-title %}لیست کاربران{% endblock %}
 {% block content %}
     <div class="container" style="margin-top: 20px;">
-
+    <div class="col-2 filter" style="float: left;">
+            <div>
+                <form>
+                    {% csrf_token %}
+                    {{ search.as_p }}
+                    <tr>
+                        <td>
+                            <button type="submit">جست و جو</button>
+                        </td>
+                    </tr>
+                </form>
+            </div>
+        </div>
+    <div class="col-10 teacher_table">
+<a href="{% url 'UserCreateView' %} "> <span> <i class="fas fa-user-plus"></i> کاربر جدید </span></a>
         {% load widget_tweaks %}
         <table class='table' style="text-align: center;">
             <tr>
@@ -39,11 +53,12 @@
                         <a href="mailto:{{ user.email }}"> {{ user.email }} </a>
                     </td>
                     <td>
-                        <a href="{% url 'StudentEdit' user.pk %}"><i class="far fa-edit"></i></a>
+                        <a href="{% url 'UserEditView' user.pk %}"><i class="far fa-edit"></i></a>
                     </td>
 
                 </tr>
             {% endfor %}
         </table>
+    </div>
     </div>
 {% endblock %}

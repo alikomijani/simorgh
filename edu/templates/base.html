@@ -56,8 +56,9 @@
             <div id="collapseUsers" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">منوی مدیریت کاربران</h6>
-                    <a class="collapse-item" href="{% url 'UserCreateView' %}">تعریف کاربر</a>
                     <a class="collapse-item" href="{% url 'UserListView' %}"> لیست کاربران</a>
+                    <a class="collapse-item" href="{% url 'StudentListView' %}"> لیست دانش آموزان</a>
+                                        <a class="collapse-item" href="{% url 'TeacherListView' %}">لیست اساتید</a>
                 </div>
             </div>
         </li>
@@ -65,11 +66,11 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStudent"
                aria-expanded="true" aria-controls="collapseStudent">
                 <i class="fas fa-fw fa-cog"></i>
-                <span>مدیریت دانش آموزان</span>
+                <span>مدیریت کلاس ها</span>
             </a>
             <div id="collapseStudent" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">منوی مدیریت دانش آموزان</h6>
+                    <h6 class="collapse-header">منوی مدیریت کلاس ها</h6>
                     <a class="collapse-item" href="{% url 'StudentCreateView' %}">تعریف دانش آموز</a>
                     <a class="collapse-item" href="{% url 'StudentListView' %}"> لیست دانش آموزان</a>
                 </div>
@@ -137,19 +138,8 @@
             </div>
         </li>
 
-        <!-- Nav Item - Charts -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>Charts</span></a>
-        </li>
 
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-            <a class="nav-link" href="tables.html">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Tables</span></a>
-        </li>
+
 
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
@@ -362,11 +352,11 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">{% block dashboard-title %}{% endblock %}</h1>
-                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> فیلتر</a>
-                </div>
+{#                <div class="d-sm-flex align-items-center justify-content-between mb-4">#}
+{#                    <h1 class="h3 mb-0 text-gray-800">{% block dashboard-title %}{% endblock %}</h1>#}
+{#                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
+{#                            class="fas fa-download fa-sm text-white-50"></i> فیلتر</a>#}
+{#                </div>#}
 
 
                 <!-- Content Row -->

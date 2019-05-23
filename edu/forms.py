@@ -1,17 +1,25 @@
 from django.forms import ModelForm
-from .models import Student
+from .models import Student, Teacher
 from django import forms
+
+
+class TeacherForm(ModelForm):
+    class Meta:
+        model = Teacher
+        fields = '__all__'
 
 
 class StudentForm(ModelForm):
     class Meta:
         model = Student
-        exclude = ['id']
+        exclude = ['courses', 'classrooms']
+
 
 class StudentSearchForm(forms.Form):
     student_id = forms.IntegerField(required=False, label='شماره دانش آموزی')
     first_name = forms.CharField(required=False, label='نام')
     last_name = forms.CharField(required=False, label='نام خانوادگی')
+
 
 class TeacherSearchForm(forms.Form):
     first_name = forms.CharField(required=False, label='نام')
@@ -20,3 +28,9 @@ class TeacherSearchForm(forms.Form):
     #     'class': 'form-control datetimepicker-input',
     #     'data-target': '#datetimepicker1'
     # }))
+
+
+class UserSearchForm(forms.Form):
+    first_name = forms.CharField(required=False, label='نام')
+    last_name = forms.CharField(required=False, label='نام خانوادگی')
+    user_name = forms.CharField(required=False, label='نام کاربری')

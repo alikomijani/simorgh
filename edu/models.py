@@ -6,13 +6,15 @@ from datetime import datetime
 # Create your models here.
 class Student(models.Model):
     student_id = models.IntegerField(verbose_name='شماره دانش آموزی')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری',primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری', primary_key=True,
+                                related_name='student')
     courses = models.ManyToManyField("Course", through='StudentCourse', related_name='students',
                                      verbose_name='دورس ')
     classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students',
                                         verbose_name='کلاس ها')
-    last_modified_date = models.DateTimeField(null=True,verbose_name='تاریخ آخرین ویرایش')
-    photo = models.ImageField(upload_to='student_profiles', null=True)
+    last_modified_date = models.DateTimeField( verbose_name='تاریخ آخرین ویرایش', auto_now_add=True)
+    photo = models.ImageField(upload_to='student_profiles', null=True, blank=True)
+
     class Meta:
         verbose_name = 'دانش آموز'
         verbose_name_plural = 'دانش آموزان'
@@ -23,7 +25,8 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     teacher_id = models.IntegerField(verbose_name='کد پرسنلی')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری',primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری', primary_key=True,
+                                related_name='teacher')
     hire_date = models.DateField(verbose_name='تاریخ استخدام')
     DIPLOMA, ASSOCIATE, BACHELOR, MASTER, PHD = 'DI', 'FD', 'LI', 'FL', 'DR'
     CHOICE_DEGREE = (
@@ -35,7 +38,8 @@ class Teacher(models.Model):
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
     profession = models.ManyToManyField('Course', verbose_name='تخصص')
-    photo = models.ImageField(upload_to='teacher_profiles', null=True)
+    photo = models.ImageField(upload_to='teacher_profiles', null=True,blank=True)
+
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
@@ -55,14 +59,14 @@ class LevelField(models.Model):
         (SECOND, 'پایه دوم'),
         (THIRD, 'پایه سوم'),
     )
-    level = models.CharField(max_length=1, choices=CHOICE_LEVEL,verbose_name='پایه تحصیلی')
+    level = models.CharField(max_length=1, choices=CHOICE_LEVEL, verbose_name='پایه تحصیلی')
     HUMANITY, MATH, NATURAL = 'HU', 'MA', 'NA'
     CHOICE_FIELD = (
         (HUMANITY, 'علوم انسانی'),
         (MATH, 'علوم ریاضی'),
         (NATURAL, 'علوم تجربی'),
     )
-    field = models.CharField(max_length=2, choices=CHOICE_FIELD,verbose_name='رشته تحصیلی')
+    field = models.CharField(max_length=2, choices=CHOICE_FIELD, verbose_name='رشته تحصیلی')
 
     class Meta:
         verbose_name = 'لیست پایه های تحصیلی'
@@ -78,11 +82,13 @@ class Classroom(models.Model):
         (A, 'کلاس الف'),
         (B, 'کلاس ب'),
     )
-    branch = models.CharField(max_length=1, choices=CHOICE_GROUP,verbose_name='شماره کلاس')
-    level_field = models.ForeignKey("LevelField", on_delete=models.SET_NULL, null=True,verbose_name='مقطع تحصیلی')
-    education_year = models.CharField(max_length=20, null=True,verbose_name='سال تحصیلی')
-    courses = models.ManyToManyField('Course', through='TeacherClassCourse', related_name='classrooms',verbose_name='دروس')
-    teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms',verbose_name='اساتید')
+    branch = models.CharField(max_length=1, choices=CHOICE_GROUP, verbose_name='شماره کلاس')
+    level_field = models.ForeignKey("LevelField", on_delete=models.SET_NULL, null=True, verbose_name='مقطع تحصیلی')
+    education_year = models.CharField(max_length=20, null=True, verbose_name='سال تحصیلی')
+    courses = models.ManyToManyField('Course', through='TeacherClassCourse', related_name='classrooms',
+                                     verbose_name='دروس')
+    teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms',
+                                      verbose_name='اساتید')
 
     class Meta:
         verbose_name = 'کلاس'
@@ -93,9 +99,9 @@ class Classroom(models.Model):
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=20,verbose_name='نام درس')
-    unit = models.IntegerField(null=True,verbose_name='تعداد واحد')
-    level_field = models.ForeignKey('LevelField', on_delete=models.SET_NULL, null=True,verbose_name='مقطع تحصیلی')
+    name = models.CharField(max_length=20, verbose_name='نام درس')
+    unit = models.IntegerField(null=True, verbose_name='تعداد واحد')
+    level_field = models.ForeignKey('LevelField', on_delete=models.SET_NULL, null=True, verbose_name='مقطع تحصیلی')
 
     def __str__(self):
         return self.name

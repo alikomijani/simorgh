@@ -18,8 +18,6 @@ urlpatterns = [
     url(r'^teacher/list/$', views.TeacherListView.as_view(), name='TeacherListView'),
     url(r'^teacher/detail/(?P<pk>[0-9]+)/$', views.TeacherDetailView.as_view(), name='TeacherDetail'),
     url(r'^teacher/edit/(?P<pk>[0-9]+)/$', views.TeacherUpdateView.as_view(), name='TeacherEdit'),
-    url(r'^student/api/detail/(?P<pk>[0-9]+)/$', views.get_student_rest_api),
-    url(r'^student/api/detail/all/$', views.get_all_student_rest_api),
     url(r'^$', views.index,name="dashboard"),
 
 ]
