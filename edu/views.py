@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Student, Teacher, Classroom
+from .models import Student, Teacher, Classroom, TeacherClassCourse
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
-from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm
+from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
+    TeacherClassCourseForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -43,6 +44,10 @@ class UserListView(ListView):
             queryset = queryset.filter(
                 Q(first_name__icontains=first_name) & Q(last_name__icontains=last_name))
         return queryset
+
+
+class UserDetailView(DetailView):
+    model = User
 
 
 class UserCreateView(CreateView):
@@ -145,3 +150,28 @@ class TeacherListView(ListView):
 
 class TeacherDetailView(DetailView):
     model = Teacher
+
+
+# TeacherClassCourse
+class TeacherClassCourseDetailView(DetailView):
+    model = TeacherClassCourse
+
+
+class TeacherClassCourseCreateView(CreateView):
+    model = TeacherClassCourse
+    form_class = TeacherClassCourseForm
+
+    def get_success_url(self):
+        return reverse('TeacherClassCourseListView')
+
+
+class TeacherClassCourseListView(ListView):
+    model = TeacherClassCourse
+
+
+class TeacherClassCourseUpdateView(UpdateView):
+    model = TeacherClassCourse
+    form_class = TeacherClassCourseForm
+
+    def get_success_url(self):
+        return reverse('TeacherClassCourseList')

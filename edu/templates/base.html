@@ -71,7 +71,7 @@
             <div id="collapseStudent" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">منوی مدیریت کلاس ها</h6>
-                    <a class="collapse-item" href="{% url 'StudentCreateView' %}">تعریف دانش آموز</a>
+                    <a class="collapse-item" href="{% url 'TeacherClassCourseList' %}">لیست کلاس ها</a>
                     <a class="collapse-item" href="{% url 'StudentListView' %}"> لیست دانش آموزان</a>
                 </div>
             </div>
@@ -93,22 +93,7 @@
                 </div>
             </div>
         </li>
-        <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseParents"
-               aria-expanded="true" aria-controls="collapseParents">
-                <i class="fas fa-fw fa-wrench"></i>
-                <span>مدیرت والدین</span>
-            </a>
-            <div id="collapseParents" class="collapse" aria-labelledby="headingUtilities"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header"> منوی مدیریت والدین</h6>
-                    <a class="collapse-item" href="utilities-color.html">تعریف والدین </a>
-                    <a class="collapse-item" href="utilities-animation.html">لیست والدین</a>
-                </div>
-            </div>
-        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider">
 
@@ -318,9 +303,9 @@
                     <li class="nav-item dropdown no-arrow" style="right: 0px">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"> {{ user.get_full_name }} </span>
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"> {{ request.user.get_full_name }} </span>
                             <img class="img-profile rounded-circle"
-                                 src="{{ user.teacher.photo.url }}{{ user.student.photo.url }}">
+                                 src="{{ request.user.teacher.photo.url }}{{ request.user.student.photo.url }}">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

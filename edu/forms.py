@@ -1,6 +1,12 @@
 from django.forms import ModelForm
-from .models import Student, Teacher
+from .models import Student, Teacher, TeacherClassCourse
 from django import forms
+
+
+class TeacherClassCourseForm(ModelForm):
+    class Meta:
+        model = TeacherClassCourse
+        fields = "__all__"
 
 
 class TeacherForm(ModelForm):

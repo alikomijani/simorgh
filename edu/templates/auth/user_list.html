@@ -35,7 +35,7 @@
             {% for user in user_list %}
                 <tr>
                     <td>
-                        <a href="{% url 'StudentDetail' user.pk %}"><i class="fas fa-info-circle"></i></a>
+                        <a href="{% url 'UserDetailView' user.pk %}"><i class="fas fa-info-circle"></i></a>
                     </td>
                     <th scope="row">
                         {{ forloop.counter }}
