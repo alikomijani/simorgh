@@ -54,6 +54,12 @@ urlpatterns += [
     url(r'^classroom/course/details/(?P<pk>[0-9]+)/$', views.ClassroomCourseDetail.as_view(), name='ClassroomCourseDetail'),
     url(r'^classroom/create/$', views.ClassroomCreate.as_view(), name='ClassroomCreate'),
     url(r'^classroom/edit/(?P<pk>[0-9]+)/$', views.ClassroomUpdate.as_view(), name='ClassroomUpdate'),
+]
 
-
+# Register
+urlpatterns += [
+    url(r'^register/List/$', views.RegisterList.as_view(), name='RegisterList'),
+    url(r'^register/details/(?P<pk>[0-9]+)/$', views.RegisterDetail.as_view(), name='RegisterDetail'),
+    url(r'^register/create/$', views.RegisterCreate.as_view(), name='RegisterCreate'),
+    url(r'^register/edit/(?P<pk>[0-9]+)/$', views.RegisterUpdate.as_view(), name='RegisterUpdate'),
 ]

@@ -112,10 +112,10 @@ class Course(models.Model):
 
 
 class StudentCourse(models.Model):
-    student = models.ForeignKey('Student', related_name='student_courses', on_delete=models.SET_NULL, null=True)
-    course = models.ForeignKey('Course', related_name='student_courses', on_delete=models.SET_NULL, null=True)
-    final_grade = models.FloatField()
-    mid_grade = models.FloatField()
+    student = models.ForeignKey('Student', related_name='student_courses', on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey('Course', related_name='student_courses', on_delete=models.SET_NULL, null=True, blank=True)
+    final_grade = models.FloatField(null=True, blank=True)
+    mid_grade = models.FloatField(null=True, blank=True)
 
 
 class Register(models.Model):

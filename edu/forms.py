@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Student, Teacher, TeacherClassCourse, Course, Classroom
+from .models import Student, Teacher, TeacherClassCourse, Course, Classroom , Register
 from django import forms
 
 
@@ -52,3 +52,8 @@ class UserSearchForm(forms.Form):
     first_name = forms.CharField(required=False, label='نام')
     last_name = forms.CharField(required=False, label='نام خانوادگی')
     user_name = forms.CharField(required=False, label='نام کاربری')
+
+class RegisterForm(ModelForm):
+    class Meta:
+        model= Register
+        fields = "__all__"

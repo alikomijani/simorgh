@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Student, Teacher, Classroom, TeacherClassCourse, Course
+from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
-    TeacherClassCourseForm, CourseForm, ClassroomForm
+    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -227,3 +227,32 @@ class ClassroomCourseDetail(DetailView):
 
 class ClassroomStudentList(DetailView):
     model = Classroom
+
+
+class RegisterUpdate(UpdateView):
+    model = Register
+
+    def get_success_url(self):
+        return reverse('RegisterList')
+
+
+class RegisterCreate(CreateView):
+    model = Register
+    form_class = RegisterForm
+
+    def form_valid(self, form):
+        for course in form.cleaned_data['classroom'].courses.all():
+            student = form.cleaned_data['student']
+            StudentCourse.objects.get_or_create(course=course, student=student)
+        return super(RegisterCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('RegisterList')
+
+
+class RegisterDetail(DetailView):
+    model = Register
+
+
+class RegisterList(ListView):
+    model = Register
