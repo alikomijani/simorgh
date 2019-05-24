@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Student, Teacher, Classroom, TeacherClassCourse
+from .models import Student, Teacher, Classroom, TeacherClassCourse, Course
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
-    TeacherClassCourseForm
+    TeacherClassCourseForm, CourseForm, ClassroomForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -15,14 +15,6 @@ from django.core.urlresolvers import reverse
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'edu/index.html')
-
-
-def get_class_students(request, class_id):
-    classroom = Classroom.objects.filter(id=class_id).first()
-    teacher = Teacher.objects.filter(classroom=classroom).first()
-    student_list = list(Student.objects.filter(classroom=classroom))
-    return render(request, 'edu/class_list.html',
-                  {'teacher': teacher, 'student_list': student_list, 'classroom': classroom})
 
 
 class UserListView(ListView):
@@ -152,7 +144,7 @@ class TeacherDetailView(DetailView):
     model = Teacher
 
 
-# TeacherClassCourse
+# TeacherClassCourse CRUD
 class TeacherClassCourseDetailView(DetailView):
     model = TeacherClassCourse
 
@@ -162,7 +154,7 @@ class TeacherClassCourseCreateView(CreateView):
     form_class = TeacherClassCourseForm
 
     def get_success_url(self):
-        return reverse('TeacherClassCourseListView')
+        return reverse('TeacherClassCourseList')
 
 
 class TeacherClassCourseListView(ListView):
@@ -175,3 +167,63 @@ class TeacherClassCourseUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('TeacherClassCourseList')
+
+
+# Course CRUD
+class CourseCreate(CreateView):
+    model = Course
+    form_class = CourseForm
+
+    def get_success_url(self):
+        return reverse('CourseList')
+
+
+class CourseUpdate(UpdateView):
+    model = Course
+    form_class = CourseForm
+
+    def get_success_url(self):
+        return reverse('CourseList')
+
+
+class CourseList(ListView):
+    model = Course
+
+
+class CourseDetail(DetailView):
+    model = Course
+
+
+# Classroom CRUD
+class ClassroomCreate(CreateView):
+    model = Classroom
+    form_class = ClassroomForm
+
+    def get_success_url(self):
+        return reverse('ClassroomList')
+
+
+class ClassroomUpdate(UpdateView):
+    model = Classroom
+    form_class = ClassroomForm
+
+    def get_success_url(self):
+        return reverse('ClassroomList')
+
+
+class ClassroomList(ListView):
+    model = Classroom
+
+
+class ClassroomStudentDetail(DetailView):
+    model = Classroom
+    template_name = 'edu/classroomstudent_detail.html'
+
+
+class ClassroomCourseDetail(DetailView):
+    model = Classroom
+    template_name = 'edu/classroomcourse_detail.html'
+
+
+class ClassroomStudentList(DetailView):
+    model = Classroom

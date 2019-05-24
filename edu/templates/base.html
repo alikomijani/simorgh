@@ -33,7 +33,7 @@
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'dashboard' %}  ">
             <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
+                <i class="fab fa-phoenix-framework"></i>
             </div>
             <div class="sidebar-brand-text mx-3">سامانه سیمرغ</div>
         </a>
@@ -58,7 +58,7 @@
                     <h6 class="collapse-header">منوی مدیریت کاربران</h6>
                     <a class="collapse-item" href="{% url 'UserListView' %}"> لیست کاربران</a>
                     <a class="collapse-item" href="{% url 'StudentListView' %}"> لیست دانش آموزان</a>
-                                        <a class="collapse-item" href="{% url 'TeacherListView' %}">لیست اساتید</a>
+                    <a class="collapse-item" href="{% url 'TeacherListView' %}">لیست اساتید</a>
                 </div>
             </div>
         </li>
@@ -71,8 +71,9 @@
             <div id="collapseStudent" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">منوی مدیریت کلاس ها</h6>
-                    <a class="collapse-item" href="{% url 'TeacherClassCourseList' %}">لیست کلاس ها</a>
-                    <a class="collapse-item" href="{% url 'StudentListView' %}"> لیست دانش آموزان</a>
+                    <a class="collapse-item" href="{% url 'CourseList' %}"> درس ها</a>
+                    <a class="collapse-item" href="{% url 'TeacherClassCourseList' %}"> لیست کلاس های درسی</a>
+                    <a class="collapse-item" href="{% url 'ClassroomList' %}"> کلاس های پایه های تحصیلی </a>
                 </div>
             </div>
         </li>
@@ -122,8 +123,6 @@
                 </div>
             </div>
         </li>
-
-
 
 
         <!-- Divider -->
@@ -303,7 +302,7 @@
                     <li class="nav-item dropdown no-arrow" style="right: 0px">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"> {{ request.user.get_full_name }} </span>
+                            <span class="ml-2 d-none d-lg-inline text-gray-600 small"> {{ request.user.get_full_name }} </span>
                             <img class="img-profile rounded-circle"
                                  src="{{ request.user.teacher.photo.url }}{{ request.user.student.photo.url }}">
                         </a>
@@ -337,11 +336,11 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-{#                <div class="d-sm-flex align-items-center justify-content-between mb-4">#}
-{#                    <h1 class="h3 mb-0 text-gray-800">{% block dashboard-title %}{% endblock %}</h1>#}
-{#                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
-{#                            class="fas fa-download fa-sm text-white-50"></i> فیلتر</a>#}
-{#                </div>#}
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">{% block dashboard-title %}{% endblock %}</h1>
+                    {#                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
+                    {#                            class="fas fa-download fa-sm text-white-50"></i> فیلتر</a>#}
+                </div>
 
 
                 <!-- Content Row -->

@@ -12,7 +12,7 @@ class Student(models.Model):
                                      verbose_name='دورس ')
     classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students',
                                         verbose_name='کلاس ها')
-    last_modified_date = models.DateTimeField( verbose_name='تاریخ آخرین ویرایش', auto_now_add=True)
+    last_modified_date = models.DateTimeField(verbose_name='تاریخ آخرین ویرایش', auto_now_add=True)
     photo = models.ImageField(upload_to='student_profiles', null=True, blank=True)
 
     class Meta:
@@ -38,7 +38,7 @@ class Teacher(models.Model):
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
     profession = models.ManyToManyField('Course', verbose_name='تخصص')
-    photo = models.ImageField(upload_to='teacher_profiles', null=True,blank=True)
+    photo = models.ImageField(upload_to='teacher_profiles', null=True, blank=True)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -125,8 +125,10 @@ class Register(models.Model):
 
 
 class TeacherClassCourse(models.Model):
-    teacher = models.ForeignKey('Teacher', related_name='teacher_class_course', on_delete=models.SET_NULL, null=True)
-    course = models.ForeignKey('Course', related_name='teacher_class_course', on_delete=models.SET_NULL, null=True)
+    teacher = models.ForeignKey('Teacher', related_name='teacher_class_course', on_delete=models.SET_NULL, null=True,
+                                verbose_name='نام استاد')
+    course = models.ForeignKey('Course', related_name='teacher_class_course', on_delete=models.SET_NULL, null=True,
+                               verbose_name='نام درس')
     classroom = models.ForeignKey('Classroom', related_name='teacher_class_course', on_delete=models.SET_NULL,
-                                  null=True)
-    class_time = models.CharField(max_length=20)
+                                  null=True, verbose_name='پایه تحصیلی')
+    class_time = models.CharField(max_length=20, verbose_name='زمان کلاس')
