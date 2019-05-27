@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register,User
+from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User
 from django import forms
 
 
@@ -26,19 +26,20 @@ class TeacherClassCourseForm(ModelForm):
 
 
 class TeacherForm(ModelForm):
-    first_name= forms.CharField(label='نام')
-    last_name =forms.CharField(label='نام خانوادگی')
-    user_name=forms.CharField(label='نام کاربری')
-    email =forms.CharField(label='ایمیل')
-    password =forms.CharField(label='کلمه عبور')
+    teacher_id = forms.CharField(label='کد پرسنلی')
+    hire_date = forms.DateField(label='تاریخ استخدام')
+    edu_degree = forms.ChoiceField(label='مدرک تحصیلی', choices=Teacher.CHOICE_DEGREE)
+    profession = forms.ModelMultipleChoiceField(label='تخصص',queryset=(Course.objects.all()))
+    photo = forms.ImageField(label='تصویر پروفایل')
     class Meta:
-        model = Teacher
-        exclude = ['user']
+        model = User
+        fields=['first_name', 'last_name', 'username', 'email','password','is_active']
 
     def __init__(self, *args, **kwargs):
         super(TeacherForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+
 
 
 class ClassroomForm(ModelForm):
@@ -56,9 +57,10 @@ class StudentForm(ModelForm):
     student_id = forms.IntegerField(label='شماره دانش آموزی')
     birthday = forms.DateField(label='تاریخ تولد')
     photo = forms.ImageField(label='تصویر پروفایل')
+
     class Meta:
         model = User
-        fields = ['username','first_name','last_name','is_active','email','password']
+        fields = ['username', 'first_name', 'last_name', 'is_active', 'email', 'password']
 
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args, **kwargs)

@@ -16,11 +16,13 @@ from django.contrib.auth.models import Group
 
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
+
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'edu/index.html')
 
-@method_decorator(check_admin,name='dispatch')
+
+@method_decorator(check_admin, name='dispatch')
 class UserListView(ListView):
     model = User
     form_class = UserSearchForm
@@ -45,7 +47,8 @@ class UserListView(ListView):
 class UserDetailView(DetailView):
     model = User
 
-@method_decorator(check_admin,name='dispatch')
+
+@method_decorator(check_admin, name='dispatch')
 class UserCreateView(CreateView):
     model = User
     fields = '__all__'
@@ -63,10 +66,18 @@ class UserEditView(UpdateView):
 
 
 # Student Views
-@method_decorator(check_admin,name='dispatch')
+@method_decorator(check_admin, name='dispatch')
 class StudentCreateView(CreateView):
-    model = Student
+    model = User
     form_class = StudentForm
+
+    def form_valid(self, form):
+        student_date = {}
+        for key in ('student_id', 'birthday', 'photo'):
+            student_date[key] = form.cleaned_data.pop(key)
+        user = form.save()
+        Student.objects.create(user=user, **student_date)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('StudentListView')
@@ -98,8 +109,16 @@ class StudentDetailView(DetailView):
 
 
 class StudentUpdateView(UpdateView):
-    model = Student
+    model = User
     form_class = StudentForm
+
+    def form_valid(self, form):
+        student_date = {}
+        for key in ('student_id', 'birthday', 'photo'):
+            student_date[key] = form.cleaned_data.pop(key)
+        user = form.save()
+        Student.objects.create(user=user, **student_date)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('StudentListView')
@@ -108,16 +127,32 @@ class StudentUpdateView(UpdateView):
 #  Teacher class view
 
 class TeacherCreateView(CreateView):
-    model = Teacher
+    model = User
     form_class = TeacherForm
+
+    def form_valid(self, form):
+        teacher_date = {}
+        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession','photo'):
+            teacher_date[key] = form.cleaned_data.pop(key)
+        user = form.save()
+        Teacher.objects.create(user=user, **teacher_date)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('TeacherListView')
 
 
 class TeacherUpdateView(UpdateView):
-    model = Teacher
+    model = User
     form_class = TeacherForm
+
+    def form_valid(self, form):
+        teacher_date = {}
+        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession','photo'):
+            teacher_date[key] = form.cleaned_data.pop(key)
+        user = form.save()
+        Teacher.objects.create(user=user, **teacher_date)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('TeacherListView')
@@ -262,5 +297,6 @@ class RegisterDetail(DetailView):
 class RegisterList(ListView):
     model = Register
 
-def error_404_view(request,exception):
-    return render(request,'404.html')
+
+def error_404_view(request, exception):
+    return render(request, '404.html')
