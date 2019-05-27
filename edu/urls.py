@@ -1,7 +1,8 @@
 from . import views
-from django.conf.urls import url, include
+from django.conf.urls import url, include, handler404
 from django.contrib.auth import views as auth_views
 
+handler404 = 'views.error_404_view'
 urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'edu/login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'template_name': 'edu/login.html'}, name='logout'),
@@ -10,8 +11,8 @@ urlpatterns = [
     url(r'^$', views.index, name="dashboard"),
 
 ]
-#student
-urlpatterns +=[
+# student
+urlpatterns += [
     url(r'^student/create/$', views.StudentCreateView.as_view(), name='StudentCreateView'),
     url(r'^student/list/$', views.StudentListView.as_view(), name='StudentListView'),
     url(r'^student/detail/(?P<pk>[0-9]+)/$', views.StudentDetailView.as_view(), name='StudentDetail'),
@@ -47,11 +48,13 @@ urlpatterns += [
     url(r'^course/create/$', views.CourseCreate.as_view(), name='CourseCreate'),
     url(r'^course/edit/(?P<pk>[0-9]+)/$', views.CourseUpdate.as_view(), name='CourseUpdate'),
 ]
-#Classrooms
+# Classrooms
 urlpatterns += [
     url(r'^classroom/List/$', views.ClassroomList.as_view(), name='ClassroomList'),
-    url(r'^classroom/student/details/(?P<pk>[0-9]+)/$', views.ClassroomStudentDetail.as_view(), name='ClassroomStudentDetail'),
-    url(r'^classroom/course/details/(?P<pk>[0-9]+)/$', views.ClassroomCourseDetail.as_view(), name='ClassroomCourseDetail'),
+    url(r'^classroom/student/details/(?P<pk>[0-9]+)/$', views.ClassroomStudentDetail.as_view(),
+        name='ClassroomStudentDetail'),
+    url(r'^classroom/course/details/(?P<pk>[0-9]+)/$', views.ClassroomCourseDetail.as_view(),
+        name='ClassroomCourseDetail'),
     url(r'^classroom/create/$', views.ClassroomCreate.as_view(), name='ClassroomCreate'),
     url(r'^classroom/edit/(?P<pk>[0-9]+)/$', views.ClassroomUpdate.as_view(), name='ClassroomUpdate'),
 ]

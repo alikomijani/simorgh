@@ -10,13 +10,17 @@ from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearch
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
+from django.contrib.auth.models import Group
 
+check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'edu/index.html')
 
-
+@method_decorator(check_admin,name='dispatch')
 class UserListView(ListView):
     model = User
     form_class = UserSearchForm
@@ -41,7 +45,7 @@ class UserListView(ListView):
 class UserDetailView(DetailView):
     model = User
 
-
+@method_decorator(check_admin,name='dispatch')
 class UserCreateView(CreateView):
     model = User
     fields = '__all__'
@@ -59,6 +63,7 @@ class UserEditView(UpdateView):
 
 
 # Student Views
+@method_decorator(check_admin,name='dispatch')
 class StudentCreateView(CreateView):
     model = Student
     form_class = StudentForm
@@ -256,3 +261,6 @@ class RegisterDetail(DetailView):
 
 class RegisterList(ListView):
     model = Register
+
+def error_404_view(request,exception):
+    return render(request,'404.html')

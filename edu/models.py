@@ -31,8 +31,8 @@ class Teacher(models.Model):
     DIPLOMA, ASSOCIATE, BACHELOR, MASTER, PHD = 'DI', 'FD', 'LI', 'FL', 'DR'
     CHOICE_DEGREE = (
         (ASSOCIATE, 'کاردانی'),
-        (BACHELOR, 'لیسانس'),
-        (MASTER, 'فوق لیسانس'),
+        (BACHELOR, 'کارشناسی'),
+        (MASTER, 'کارشناسی ارشد'),
         (PHD, 'دکتری'),
         (DIPLOMA, 'دیپلم'),
     )
