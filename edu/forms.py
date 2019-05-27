@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register
+from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register,User
 from django import forms
 
 
@@ -26,9 +26,14 @@ class TeacherClassCourseForm(ModelForm):
 
 
 class TeacherForm(ModelForm):
+    first_name= forms.CharField(label='نام')
+    last_name =forms.CharField(label='نام خانوادگی')
+    user_name=forms.CharField(label='نام کاربری')
+    email =forms.CharField(label='ایمیل')
+    password =forms.CharField(label='کلمه عبور')
     class Meta:
         model = Teacher
-        fields = '__all__'
+        exclude = ['user']
 
     def __init__(self, *args, **kwargs):
         super(TeacherForm, self).__init__(*args, **kwargs)
@@ -48,9 +53,12 @@ class ClassroomForm(ModelForm):
 
 
 class StudentForm(ModelForm):
+    student_id = forms.IntegerField(label='شماره دانش آموزی')
+    birthday = forms.DateField(label='تاریخ تولد')
+    photo = forms.ImageField(label='تصویر پروفایل')
     class Meta:
-        model = Student
-        exclude = ['courses', 'classrooms']
+        model = User
+        fields = ['username','first_name','last_name','is_active','email','password']
 
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args, **kwargs)

@@ -1,10 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+import jdatetime
 
 
 # Create your models here.
-class Student(models.Model):
+
+# abstract person
+class Person(models.Model):
+    birthday = models.DateField(verbose_name='تاریخ تولد',blank=True,null=True)
+    last_modified_date = models.DateTimeField(verbose_name='تاریخ آخرین ویرایش', auto_now_add=True,blank=True,null=True)
+    photo = models.ImageField(upload_to='profiles', null=True, blank=True , verbose_name='تصویر پروفایل')
+
+    class Meta:
+        abstract = True
+
+
+class Student(Person, models.Model):
     student_id = models.IntegerField(verbose_name='شماره دانش آموزی')
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری', primary_key=True,
                                 related_name='student')
@@ -12,8 +24,15 @@ class Student(models.Model):
                                      verbose_name='دورس ')
     classrooms = models.ManyToManyField("Classroom", through='Register', related_name='students',
                                         verbose_name='کلاس ها')
-    last_modified_date = models.DateTimeField(verbose_name='تاریخ آخرین ویرایش', auto_now_add=True)
-    photo = models.ImageField(upload_to='student_profiles', null=True, blank=True)
+    math, humanities, experimental = 'MA', 'HU', 'EX'
+    CHOICE_education_field = (
+        (math, 'ریاضی و فیزیک'),
+        (humanities, 'علوم انسانی'),
+        (experimental, 'علوم تجربی')
+    )
+
+    education_field = models.CharField(max_length=2, choices=CHOICE_education_field, verbose_name='رشته تحصیلی',
+                                       blank=True,null=True)
 
     class Meta:
         verbose_name = 'دانش آموز'
@@ -23,7 +42,7 @@ class Student(models.Model):
         return self.user.first_name + ' ' + self.user.last_name
 
 
-class Teacher(models.Model):
+class Teacher(Person, models.Model):
     teacher_id = models.IntegerField(verbose_name='کد پرسنلی')
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='نام کاربری', primary_key=True,
                                 related_name='teacher')
@@ -38,7 +57,6 @@ class Teacher(models.Model):
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
     profession = models.ManyToManyField('Course', verbose_name='تخصص')
-    photo = models.ImageField(upload_to='teacher_profiles', null=True, blank=True)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -112,8 +130,10 @@ class Course(models.Model):
 
 
 class StudentCourse(models.Model):
-    student = models.ForeignKey('Student', related_name='student_courses', on_delete=models.SET_NULL, null=True, blank=True)
-    course = models.ForeignKey('Course', related_name='student_courses', on_delete=models.SET_NULL, null=True, blank=True)
+    student = models.ForeignKey('Student', related_name='student_courses', on_delete=models.SET_NULL, null=True,
+                                blank=True)
+    course = models.ForeignKey('Course', related_name='student_courses', on_delete=models.SET_NULL, null=True,
+                               blank=True)
     final_grade = models.FloatField(null=True, blank=True)
     mid_grade = models.FloatField(null=True, blank=True)
 
@@ -131,4 +151,23 @@ class TeacherClassCourse(models.Model):
                                verbose_name='نام درس')
     classroom = models.ForeignKey('Classroom', related_name='teacher_class_course', on_delete=models.SET_NULL,
                                   null=True, verbose_name='پایه تحصیلی')
-    class_time = models.CharField(max_length=20, verbose_name='زمان کلاس')
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'
+    CHOICE_DAY = (
+        (MONDAY, 'دوشنبه'),
+        (TUESDAY, 'سه شنبه'),
+        (WEDNESDAY, 'چهارشنبه'),
+        (THURSDAY, 'پنجشنبه'),
+        (FRIDAY, 'جمعه'),
+        (SATURDAY, 'شنبه'),
+        (SUNDAY, 'یکشنبه'),
+    )
+    class_day = models.CharField(max_length=2, choices=CHOICE_DAY, verbose_name='روز کلاس', blank=True, null=True)
+    FIRST, SECOND, THIRD, FORTH, FIFTH = 'FI', 'SE', 'TH', 'FO', 'FI'
+    CHOICE_TIME = (
+        (FIRST, 'زنگ اول'),
+        (SECOND, 'زنگ دوم'),
+        (THIRD, 'زنگ سوم'),
+        (FORTH, 'زنگ چهارم'),
+        (FIFTH, 'زنگ پنجم'),
+    )
+    class_time = models.CharField(max_length=2, choices=CHOICE_TIME, verbose_name='زنگ', blank=True, null=True)
