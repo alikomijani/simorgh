@@ -2,12 +2,12 @@ from . import views
 from django.conf.urls import url, include, handler404
 from django.contrib.auth import views as auth_views
 
-handler404 = 'views.error_404_view'
+
 urlpatterns = [
-    url(r'^login/$', auth_views.login, {'template_name': 'edu/login.html'}, name='login'),
-    url(r'^logout/$', auth_views.logout, {'template_name': 'edu/login.html'}, name='logout'),
-    url(r'^register/$', auth_views.login, {'template_name': 'edu/login.html'}, name='register'),
-    url(r'^password_reset/$', auth_views.login, {'template_name': 'edu/login.html'}, name='password_reset'),
+    url(r'^login/$', auth_views.LoginView, {'template_name': 'edu/login.html'}, name='login'),
+    url(r'^logout/$', auth_views.LogoutView, {'template_name': 'edu/login.html'}, name='logout'),
+    url(r'^register/$', auth_views.LoginView, {'template_name': 'edu/login.html'}, name='register'),
+    url(r'^password_reset/$', auth_views.LoginView, {'template_name': 'edu/login.html'}, name='password_reset'),
     url(r'^$', views.index, name="dashboard"),
 
 ]

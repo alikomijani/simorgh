@@ -3,25 +3,28 @@
 {% block title %}
     {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
 {% endblock %}
-
+{%  block dashboard-title %}
+    لیست کاربران
+{% endblock %}
 {% block content %}
-    <h1 class="h3 mb-2 text-gray-800">لیست کاربران</h1>
-    <p class="mb-4"> در اینجا لیست تمامی کاربران را مشاهده می نمایید<a href="{% url 'StudentCreateView' %}"> ثبت کاربر
-        جدید </a></p>
+
 
     <div class="col-12 p-0 row">
 
         <div class="col-10 m-0 p-0">
             <div class="card shadow mb-4 ml-2">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">جدول اطلاعات کاربران</h6>
+                    <tr class="col-12">
+                        <th><i class="m-0 font-weight-bold text-primary col-6">جدول اطلاعات کاربران</i></th>
+                        <th><i style="text-align: left" class="fas fa-user-plus col-6"></i><a
+                                href="{% url 'UserCreateView' %}"> ثبت کاربر جدید</a></th>
+                    </tr>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                             <tr>
-
                                 <th style="width:2px;">ردیف</th>
                                 <th>نام</th>
                                 <th>نام خانوادگی</th>

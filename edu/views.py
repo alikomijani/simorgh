@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, reverse
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse
 from django.views.generic import ListView
 from django.views.generic import DetailView
@@ -9,7 +9,6 @@ from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearch
     TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
