@@ -153,13 +153,13 @@ class TeacherClassCourse(models.Model):
                                   null=True, verbose_name='پایه تحصیلی')
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'
     CHOICE_DAY = (
+        (SATURDAY, 'شنبه'),
+        (SUNDAY, 'یکشنبه'),
         (MONDAY, 'دوشنبه'),
         (TUESDAY, 'سه شنبه'),
         (WEDNESDAY, 'چهارشنبه'),
         (THURSDAY, 'پنجشنبه'),
         (FRIDAY, 'جمعه'),
-        (SATURDAY, 'شنبه'),
-        (SUNDAY, 'یکشنبه'),
     )
     class_day = models.CharField(max_length=2, choices=CHOICE_DAY, verbose_name='روز کلاس', blank=True, null=True)
     FIRST, SECOND, THIRD, FORTH, FIFTH = 'FI', 'SE', 'TH', 'FO', 'FI'

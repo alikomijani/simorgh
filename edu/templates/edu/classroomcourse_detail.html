@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'tablesbase.html' %}
 {% load static from staticfiles %}
 {% block title %}
     {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
@@ -6,62 +6,35 @@
 {% block dashboard-title %}
     لیست درس ها
 {% endblock %}
-{% block content %}
-    <div class="container" style="margin-top: 20px;">
-        <div class="col-2 filter" style="float: left;">
-            <div>
-                <form >
-                    {% csrf_token %}
-                    <div class="form-group">
-                    {{ search.as_p }}
-                    </div>
-                    <tr>
-                        <td>
-                            <button class="btn btn-primary" type="submit">جست و جو</button>
-                        </td>
-                    </tr>
-                </form>
-            </div>
-        </div>
-    <div class="col-10 teacher_table">
-        {% load widget_tweaks %}
-    <a href="{% url 'CourseCreate' %} "> <span> <i class="fas fa-user-plus"></i> ثبت درس جدید </span></a>
 
-
-        <table class='table' style="text-align: center;">
-            <tr>
-                <th scope="col" style="width:25px;"> مشخصات</th>
-                <th scope="col" style="width:25px;">ردیف</th>
-                <th scope="col">نام درس</th>
-                <th scope="col">پایه تحصیلی</th>
-                <th scope="col">تعداد واحد</th>
-                <th>ویرایش</th>
-            </tr>
-            {% for course in classroom.courses.all %}
-                <tr>
-                    <td>
-                        <a href="{% url 'CourseDetail' course.pk %}"><i class="fas fa-info-circle"></i></a>
-                    </td>
-                    <th scope="row">
-                        {{ forloop.counter }}
-                    </th>
-                    <td>
-                        {{ course.name }}
-                    </td>
-                    <td>
-                        {{ course.level_field }}
-                    </td>
-                    <td>
-                        {{ course.unit }}
-                    </td>
-
-                    <td>
-                        <a href="{% url 'CourseUpdate' course.pk %}"><i class="far fa-edit"></i></a>
-                    </td>
-
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-    </div>
+{% block tabel_title %}جدول اطلاعات درس ها{% endblock %}
+{% block tabel_new_item_link %}{% url 'CourseCreate' %}{% endblock %}
+{% block tabel_new_item %} ایجاد درس جدید{% endblock %}
+{% block tabel_header %}
+    <th style="text-align: center;width:25px;">ردیف</th>
+    <th style="text-align: center">نام درس</th>
+    <th style="text-align: center">پایه تحصیلی</th>
+    <th style="text-align: center;width: 100px;">تعداد واحد</th>
+    <th style="text-align: center;width: 120px;">ویرایش</th>
+{% endblock %}
+{% block tabel_footer %}
+    <th style="width:25px;">ردیف</th>
+    <th>نام درس</th>
+    <th>پایه تحصیلی</th>
+    <th>تعداد واحد</th>
+    <th>ویرایش</th>
+{% endblock %}
+{% block tabel_body %}
+    {% for course in classroom.courses.all %}
+        <tr>
+            <th>{{ forloop.counter }}</th>
+            <td>{{ course.name }}</td>
+            <td>{{ course.level_field }}</td>
+            <td >{{ course.unit }}</td>
+            <td style="text-align: center;">
+                <a href="{% url 'CourseUpdate' course.pk %}"><i class="far fa-edit"></i></a>
+                <a href="{% url 'CourseDetail' course.pk %}"><i class="fas fa-info-circle"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
 {% endblock %}
