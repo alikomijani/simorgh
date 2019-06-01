@@ -344,18 +344,33 @@
                     {#                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
                     {#                            class="fas fa-download fa-sm text-white-50"></i> فیلتر</a>#}
                 </div>
-
-
                 <!-- Content Row -->
-
-                <div class="col-12 p-0 row">
-                    <div class="col-10 m-0 p-0">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="card shadow mb-4 ">
+                            <div>
+                                <!-- Card Header - Accordion -->
+                                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
+                                   role="button"
+                                   aria-expanded="true" aria-controls="collapseCardExample">
+                                    <h6 class="m-0 font-weight-bold text-primary">فیلتر</h6>
+                                </a>
+                                <!-- Card Content - Collapse -->
+                                <div class="collapse show" id="collapseCardExample">
+                                    <div class="card-body">
+                                        {% block filter_form %} {% endblock %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
                         <div class="card shadow mb-4 ml-2">
                             <div class="card-header col-12 py-3 ">
                                 <tr>
-                                    <th><i class="m-0 font-weight-bold text-primary col-6">
+                                    <th><i class="m-0 font-weight-bold text-primary col-6 col-md-6">
                                         {% block tabel_title %}{% endblock %}</i></th>
-                                    <th><i style="text-align: left" class="fas fa-user-plus col-6"></i><a
+                                    <th><i style="text-align: left" class="fas fa-user-plus col-6 col-md-6"></i><a
                                             href="{% block tabel_new_item_link %}{% endblock %}">
                                         {% block tabel_new_item %}{% endblock %}</a></th>
                                 </tr>
@@ -381,24 +396,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2 m-0 p-0">
-                        <div class="card shadow mb-4 ">
-                            <div>
-                                <!-- Card Header - Accordion -->
-                                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
-                                   role="button"
-                                   aria-expanded="true" aria-controls="collapseCardExample">
-                                    <h6 class="m-0 font-weight-bold text-primary">فیلتر</h6>
-                                </a>
-                                <!-- Card Content - Collapse -->
-                                <div class="collapse show" id="collapseCardExample">
-                                    <div class="card-body">
-                                        {% block filter_form %} {% endblock %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
 

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'tablesbase.html' %}
 {% load static from staticfiles %}
 {% block title %}
     {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
@@ -6,109 +6,70 @@
 {% block dashboard-title %}
     لیست اساتید
 {% endblock %}
-{% block content %}
-    <div class="col-12 p-0 row">
-        <div class="col-10 m-0 p-0">
-            <div class="card shadow mb-4 ml-2">
-                <div class="card-header col-12 py-3 ">
-                    <tr>
-                        <th><i class="m-0 font-weight-bold text-primary col-6">جدول اطلاعات اساتید</i></th>
-                        <th><i style="text-align: left" class="fas fa-user-plus col-6"></i><a
-                                href="{% url 'TeacherCreateView' %}"> ثبت استاد جدید</a></th>
-                    </tr>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                            <tr>
-                                <th style="width:25px;">ردیف</th>
-                                <th>نام</th>
-                                <th>نام خانوادگی</th>
-                                <th> نام کاربری</th>
-                                <th> ایمیل</th>
-                                <th> مدرک تحصیلی</th>
-                                <th> تخصص</th>
-                                <th>ابزار</th>
-                            </tr>
-                            </thead>
-                            <tfoot>
-                            <tr>
 
-                                <th style="width:25px;">ردیف</th>
-                                <th>نام</th>
-                                <th>نام خانوادگی</th>
-                                <th> نام کاربری</th>
-                                <th> ایمیل</th>
-                                <th> مدرک تحصیلی</th>
-                                <th> تخصص</th>
-                                <th>ابزار</th>
-                            </tr>
-                            </tfoot>
-                            <tbody>
-                            {% for teacher in teacher_list %}
-                                <tr>
+{% block tabel_title %}جدول اطلاعات اساتید {% endblock %}
+{% block tabel_new_item_link %}{% url 'TeacherCreateView' %}{% endblock %}
+{% block tabel_new_item %} ثبت استاد جدید{% endblock %}
+{% block tabel_header %}
+    <th style="width:25px;">ردیف</th>
+    <th>نام</th>
+    <th>نام خانوادگی</th>
+    <th> نام کاربری</th>
+    <th> ایمیل</th>
+    <th> مدرک تحصیلی</th>
+    <th> تخصص</th>
+    <th>ابزار</th>
+{% endblock %}
+{% block tabel_footer %}
+    <th style="width:25px;">ردیف</th>
+    <th>نام</th>
+    <th>نام خانوادگی</th>
+    <th> نام کاربری</th>
+    <th> ایمیل</th>
+    <th> مدرک تحصیلی</th>
+    <th> تخصص</th>
+    <th>ابزار</th>
+{% endblock %}
+{% block tabel_body %}
+    {% for teacher in teacher_list %}
+        <tr>
+            <th>{{ forloop.counter }}</th>
+            <td>{{ teacher.user.first_name }}</td>
+            <td>{{ teacher.user.last_name }}</td>
+            <td>{{ teacher.user.username }}</td>
+            <td><a href="mailto:{{ teacher.user.email }}"> {{ teacher.user.email }} </a></td>
+            <td>{{ teacher.get_edu_degree_display }}</td>
+            <td>{{ teacher.profession.first }}</td>
+            <td><a href="{% url 'TeacherDetail' teacher.pk %}"><i
+                    class="fas fa-info-circle"></i></a><a
+                    href="{% url 'TeacherEdit' teacher.pk %}"><i class="far fa-edit"></i></a>
+        </tr>
+    {% endfor %}
+{% endblock %}
+{% block filter_form %}
+    <form class="form">
+        {% csrf_token %}
 
-                                    <th scope="row">{{ forloop.counter }}</th>
-                                    <td>{{ teacher.user.first_name }}</td>
-                                    <td>{{ teacher.user.last_name }}</td>
-                                    <td>{{ teacher.user.username }}</td>
-                                    <td><a href="mailto:{{ teacher.user.email }}"> {{ teacher.user.email }} </a></td>
-                                    <td>{{ teacher.get_edu_degree_display }}</td>
-                                    <td>{{ teacher.profession.first }}</td>
-                                    <td><a href="{% url 'TeacherDetail' teacher.pk %}"><i
-                                            class="fas fa-info-circle"></i></a><a
-                                            href="{% url 'TeacherEdit' teacher.pk %}"><i class="far fa-edit"></i></a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        {{ search.non_field_errors }}
+        <div class="form-group">
+            {{ search.subject.errors }}
+            <label for="{{ search.first_name.id_for_label }}">نام: </label>
+            {{ search.first_name }}
         </div>
-        <div class="col-2 m-0 p-0">
-            <div class="card shadow mb-4 ">
-                <div>
-                    <!-- Card Header - Accordion -->
-                    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
-                       role="button"
-                       aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">فیلتر</h6>
-                    </a>
-                    <!-- Card Content - Collapse -->
-                    <div class="collapse show" id="collapseCardExample">
-                        <div class="card-body">
-                            <form class="form">
-                                {% csrf_token %}
-
-                                {{ search.non_field_errors }}
-                                <div class="form-group">
-                                    {{ search.subject.errors }}
-                                    <label for="{{ search.first_name.id_for_label }}">نام: </label>
-                                    {{ search.first_name }}
-                                </div>
-                                <div class="form-group">
-                                    {{ search.message.errors }}
-                                    <label for="{{ search.last_name.id_for_label }}">نام خانوادگی: </label>
-                                    {{ search.last_name }}
-                                </div>
-                                <div class="form-group">
-                                    {{ search.sender.errors }}
-                                    <label for="{{ search.user_name.id_for_label }}">نام کاربری :</label>
-                                    {{ search.user_name }}
-                                </div>
-
-
-                                <div>
-                                    <button type="submit" class="btn btn-light">جست و جو</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            {{ search.message.errors }}
+            <label for="{{ search.last_name.id_for_label }}">نام خانوادگی: </label>
+            {{ search.last_name }}
         </div>
-    </div>
+        <div class="form-group">
+            {{ search.sender.errors }}
+            <label for="{{ search.user_name.id_for_label }}">نام کاربری :</label>
+            {{ search.user_name }}
+        </div>
+
+
+        <div>
+            <button type="submit" class="btn btn-light">جست و جو</button>
+        </div>
+    </form>
 {% endblock %}
