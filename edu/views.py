@@ -69,6 +69,7 @@ class UserEditView(UpdateView):
 class StudentCreateView(CreateView):
     model = User
     form_class = StudentForm
+    template_name = 'edu/student_form.html'
 
     def form_valid(self, form):
         student_date = {}
@@ -128,6 +129,7 @@ class StudentUpdateView(UpdateView):
 class TeacherCreateView(CreateView):
     model = User
     form_class = TeacherForm
+    template_name = 'edu/teacher_form.html'
 
     def form_valid(self, form):
         teacher_date = {}

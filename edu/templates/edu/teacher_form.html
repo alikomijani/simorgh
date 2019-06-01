@@ -1,50 +1,51 @@
 {% extends 'formbase.html' %}
 {% load static from staticfiles %}
 {% block title %}
-     {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
+    {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
 {% endblock %}
 {% block dashboard-title %}
-     ثبت نام استاد جدید
-    {% endblock %}
+    ثبت نام استاد جدید
+{% endblock %}
 {% block form_title %}
     فرم ثبت نام استاد جدید
 {% endblock %}
 {% block form_body %}
-{% if form.errors %}
-    {% for field in form %}
-        {% for error in field.errors %}
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
             <div class="alert alert-danger">
                 <strong>{{ error|escape }}</strong>
             </div>
         {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-{% endif %}
+    {% endif %}
 
     {% load widget_tweaks %}
 
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-  {% for hidden_field in form.hidden_fields %}
-    {{ hidden_field }}
-  {% endfor %}
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+        {% endfor %}
 
-  {% for field in form.visible_fields %}
-    <div class="form-group">
-      {{ field.label_tag }}
-      {% render_field field class="form-control" %}
-      {% if field.help_text %}
-        <small class="form-text text-muted">{{ field.help_text }}</small>
-      {% endif %}
-    </div>
-  {% endfor %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {% render_field field class="form-control" %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
 
-  <button type="submit" class="btn btn-primary">تایید و ثبت اطلاعات</button>
-</form>
+        <button type="submit" class="btn btn-primary">تایید و ثبت اطلاعات</button>
 
+
+    </form>
 {% endblock %}
