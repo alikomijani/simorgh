@@ -3,41 +3,58 @@
 {% block title %}
     {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
 {% endblock %}
-    {% block dashboard-title %}فرم ثبت نام کاربر{% endblock %}
+{% block dashboard-title %} ثبت نام کاربر{% endblock %}
 {% block content %}
 
     <div class="container" style="margin-top: 20px;">
-            {% load widget_tweaks %}
-{% if form.errors %}
-    {% for field in form %}
-        {% for error in field.errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
+        {% load widget_tweaks %}
+        <div class="col-lg-12">
+            <div class="card shadow mb-4 ">
+                <div>
+                    <!-- Card Header - Accordion -->
+                    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
+                       role="button"
+                       aria-expanded="true" aria-controls="collapseCardExample">
+                        <h6 class="m-0 font-weight-bold text-primary">فرم ثبت نام کاربر</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="collapseCardExample">
+                        <div class="card-body">
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <table>
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+                                    {% for hidden_field in form.hidden_fields %}
+                                        {{ hidden_field }}
+                                    {% endfor %}
+                                    {{ form.as_table }}
+                                    <tr>
+                                        <td>
+                                            <button type="submit" class="btn btn-primary">ثبت کاربر</button>
+                                        </td>
+                                    </tr>
+
+                                </form>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
         </div>
-    {% endfor %}
-{% endif %}
 
-
-<table>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% for hidden_field in form.hidden_fields %}
-                {{ hidden_field }}
-            {% endfor %}
-            {{ form.as_table}}
-
-
-</table>
-
-            <button type="submit" class="btn btn-primary">ثبت کاربر</button>
-
-        </form>
     </div>
 {% endblock %}
