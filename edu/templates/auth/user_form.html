@@ -22,20 +22,26 @@
             </div>
         {% endfor %}
     {% endif %}
-    <table>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+    {% load widget_tweaks %}
 
-            {% for hidden_field in form.hidden_fields %}
-                {{ hidden_field }}
-            {% endfor %}
-            {{ form.as_table }}
-            <tr>
-                <td>
-                    <button type="submit" class="btn btn-primary">ثبت کاربر</button>
-                </td>
-            </tr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-        </form>
-    </table>
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {% render_field field class="form-control" %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
 {% endblock %}
