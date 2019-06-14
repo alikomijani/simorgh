@@ -1,27 +1,21 @@
 from django.shortcuts import render, reverse
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse
-from django.views.generic import ListView
-from django.views.generic import DetailView
-from django.views.generic import UpdateView
-from django.views.generic import CreateView
+from django.views.generic import ListView,CreateView,DetailView,UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
     TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import method_decorator
-from django.contrib.auth.models import Group
-
+from django.contrib.auth.models import User,Group
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import user_passes_test,login_required
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
 
-@login_required(login_url='/login/')
+
+@login_required
 def index(request):
     return render(request, 'edu/index.html')
 
 
-@method_decorator(check_admin, name='dispatch')
 class UserListView(ListView):
     model = User
     form_class = UserSearchForm
@@ -47,7 +41,6 @@ class UserDetailView(DetailView):
     model = User
 
 
-@method_decorator(check_admin, name='dispatch')
 class UserCreateView(CreateView):
     model = User
     fields = '__all__'
@@ -65,7 +58,6 @@ class UserEditView(UpdateView):
 
 
 # Student Views
-@method_decorator(check_admin, name='dispatch')
 class StudentCreateView(CreateView):
     model = User
     form_class = StudentForm

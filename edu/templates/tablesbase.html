@@ -1,7 +1,7 @@
 {% load static from staticfiles %}
 
 <!DOCTYPE html>
-<html>
+<html lang="fa">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,6 +21,7 @@
     <!-- Custom styles for this template-->
     <link rel="stylesheet" href="{% static 'css/edu/style.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
+{#<link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">#}
     {% block styles %}{% endblock %}
 </head>
 
@@ -85,7 +86,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             {% block tabel_header %}{% endblock %}
@@ -162,6 +163,7 @@
 <!-- Custom scripts for all pages-->
 <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 <!-- Page level custom scripts -->
+
 <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
