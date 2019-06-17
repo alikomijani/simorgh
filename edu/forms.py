@@ -28,18 +28,34 @@ class TeacherClassCourseForm(ModelForm):
 class TeacherForm(ModelForm):
     teacher_id = forms.CharField(label='کد پرسنلی')
     hire_date = forms.DateField(label='تاریخ استخدام')
+    profession = forms.ModelMultipleChoiceField(label='تخصص', queryset=(Course.objects.all()))
     edu_degree = forms.ChoiceField(label='مدرک تحصیلی', choices=Teacher.CHOICE_DEGREE)
-    profession = forms.ModelMultipleChoiceField(label='تخصص',queryset=(Course.objects.all()))
     photo = forms.ImageField(label='تصویر پروفایل')
+    father_name = forms.CharField(label='نام پدر')
     class Meta:
         model = User
-        fields=['first_name', 'last_name', 'username', 'email','password','is_active']
+        fields = ['first_name', 'last_name', 'username', 'password', 'email', 'is_active']
+        labels = {
+            "username": "نام کاربری",
+            "first_name": "نام",
+            "last_name": "نام خانوادگی",
+            "is_active": "فعال",
+            "email": "پست الکترونیک",
+            "password": "کلمه عبور"
+        }
+        help_texts = {
+            "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز میباشد.",
+            "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
+        }
 
     def __init__(self, *args, **kwargs):
         super(TeacherForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
-
+            if visible.name is 'photo':
+                visible.field.widget.attrs['class'] = 'form-control-file border'
+            else:
+                visible.field.widget.attrs['class'] = 'form-control'
 
 
 class ClassroomForm(ModelForm):
@@ -55,17 +71,37 @@ class ClassroomForm(ModelForm):
 
 class StudentForm(ModelForm):
     student_id = forms.IntegerField(label='شماره دانش آموزی')
-    birthday = forms.DateField(label='تاریخ تولد')
+    birthday = forms.DateField(label='تاریخ تولد', widget=forms.DateInput)
     photo = forms.ImageField(label='تصویر پروفایل')
-
+    education_field = forms.ChoiceField(choices=Student.CHOICE_education_field, label='رشته تحصیلی')
+    father_name = forms.CharField(label='نام پدر')
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'is_active', 'email', 'password']
+        labels = {
+            "username": "نام کاربری",
+            "first_name": "نام",
+            "last_name": "نام خانوادگی",
+            "is_active": "فعال",
+            "email": "پست الکترونیک",
+            "password": "کلمه عبور",
+        }
+        widgets = {
+            'password': forms.PasswordInput,
+        }
+        help_texts = {
+            "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز می‌باشد.",
+            "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
+        }
 
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args, **kwargs)
+
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
+            if visible.name is 'photo':
+                visible.field.widget.attrs['class'] = 'form-control-file border'
+            else:
+                visible.field.widget.attrs['class'] = 'form-control'
 
 
 class StudentSearchForm(forms.Form):
@@ -113,3 +149,37 @@ class RegisterForm(ModelForm):
         super(RegisterForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['username','first_name', 'last_name', 'password', 'is_superuser', 'is_staff','email',  'is_active',
+                  'groups', 'user_permissions']
+        labels = {
+            "username": "نام کاربری",
+            "first_name": "نام",
+            "last_name": "نام خانوادگی",
+            "is_active": "فعال",
+            "email": "پست الکترونیک",
+            "password": "کلمه عبور",
+            "groups": 'گروه ها',
+            'user_permissions': 'دسترسی ها',
+            'is_superuser': 'آیا کاربر مدیر سیستم می‌باشد؟',
+            'is_staff': 'آیا کاربر از کارکنان می‌باشد؟',
+        }
+        help_texts = {
+            "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز می‌باشد.",
+            "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
+            'is_superuser':'انتخاب این گزینه تمامی دسترسی ها را به کاربر اعطا می‌کند',
+            'is_staff': 'اجازه ورود در محیط ادمین را به کاربر می‌دهد.',
+            "user_permissions":'دسترسی های کاربر را مشخص می‌کند',
+            'groups': 'گروه کاربر را مشخص می‌کند و تمامی دسترسی های لازم را به او می‌دهد'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+            if visible.name is 'is_superuser' or visible.name is 'is_staff' or visible.name is 'is_active':
+                visible.field.widget.attrs['class'] = 'custom-control custom-checkbox'

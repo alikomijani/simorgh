@@ -11,7 +11,7 @@ class Person(models.Model):
     birthday = models.DateField(verbose_name='تاریخ تولد',blank=True,null=True)
     last_modified_date = models.DateTimeField(verbose_name='تاریخ آخرین ویرایش', auto_now_add=True,blank=True,null=True)
     photo = models.ImageField(upload_to='profiles', null=True, blank=True , verbose_name='تصویر پروفایل')
-
+    father_name = models.CharField(max_length = 40,verbose_name='نام پدر',blank=True,null=True)
     class Meta:
         abstract = True
 

@@ -3,13 +3,13 @@ from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Reg
 from django.views.generic import ListView,CreateView,DetailView,UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
-    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm
+    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm , UserForm
 from django.contrib.auth.models import User,Group
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import user_passes_test,login_required
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
-
+from jalali_date import datetime2jalali, date2jalali
 
 @login_required
 def index(request):
@@ -43,7 +43,8 @@ class UserDetailView(DetailView):
 
 class UserCreateView(CreateView):
     model = User
-    fields = '__all__'
+    form_class = UserForm
+    # fields = '__all__'
 
     def get_success_url(self):
         return reverse('UserListView')
@@ -51,7 +52,7 @@ class UserCreateView(CreateView):
 
 class UserEditView(UpdateView):
     model = User
-    fields = '__all__'
+    form_class = UserForm
 
     def get_success_url(self):
         return reverse('UserListView')
@@ -62,7 +63,7 @@ class StudentCreateView(CreateView):
     model = User
     form_class = StudentForm
     template_name = 'edu/student_form.html'
-
+    # jalali_join = datetime2jalali(request.user.date_joined).strftime('%y/%m/%d _ %H:%M:%S')
     def form_valid(self, form):
         student_date = {}
         for key in ('student_id', 'birthday', 'photo'):
