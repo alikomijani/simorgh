@@ -1,4 +1,6 @@
 from django.shortcuts import render, reverse
+from django.utils.decorators import method_decorator
+
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
@@ -15,7 +17,7 @@ check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.gr
 def index(request):
     return render(request, 'edu/index.html')
 
-
+@method_decorator(check_admin,name='dispatch')
 class UserListView(ListView):
     model = User
     form_class = UserSearchForm
@@ -72,7 +74,9 @@ class StudentCreateView(CreateView):
         datelist = student_data['birthday'].split('/')
         jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
         student_data['birthday'] = jdata.togregorian()
+        group=Group.objects.get(name='student')
         user = form.save()
+        group.user_set.add(user)
         Student.objects.create(user=user, **student_data)
         return super().form_valid(form)
 
@@ -160,6 +164,9 @@ class TeacherCreateView(CreateView):
             teacher_date[key] = form.cleaned_data.pop(key)
         user = form.save()
         Teacher.objects.create(user=user, **teacher_date)
+        group=Group.objects.get(name='teacher')
+        user = form.save()
+        group.user_set.add(user)
         return super().form_valid(form)
 
     def get_success_url(self):

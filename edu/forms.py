@@ -98,16 +98,20 @@ class StudentForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        pk = kwargs.pop('pk')
+        pk =None
+        if 'pk' in kwargs.keys():
+            pk = kwargs.pop('pk')
         super(StudentForm, self).__init__(*args, **kwargs)
-        student = Student.objects.get(pk=pk)
-        self.fields['student_id'].initial = student.student_id
-        jdata = jdatetime.date.fromgregorian(year=student.birthday.year, month=student.birthday.month,
-                                             day=student.birthday.day)
-        self.fields['birthday'].initial = jdata.togregorian()
-        self.fields['photo'].initial = student.photo
-        self.fields['education_field'].initial = student.education_field
-        self.fields['father_name'].initial = student.father_name
+        if pk is not None:
+            student = Student.objects.get(pk=pk)
+            jdata = jdatetime.date.fromgregorian(year=student.birthday.year, month=student.birthday.month,
+                                                 day=student.birthday.day)
+            self.fields['birthday'].initial = jdata.togregorian()
+            self.fields['photo'].initial = student.photo
+            self.fields['education_field'].initial = student.education_field
+            self.fields['father_name'].initial = student.father_name
+            self.fields['student_id'].initial = student.student_id
+
 
         for visible in self.visible_fields():
             if visible.name is 'photo':
@@ -133,10 +137,6 @@ class TeacherSearchForm(forms.Form):
     first_name = forms.CharField(required=False, label='نام')
     last_name = forms.CharField(required=False, label='نام خانوادگی')
 
-    # hire_date = forms.DateTimeField(required=False, label='تاریخ استخدام', widget=forms.DateTimeInput(attrs={
-    #     'class': 'form-control datetimepicker-input',
-    #     'data-target': '#datetimepicker1'
-    # }))
     def __init__(self, *args, **kwargs):
         super(TeacherSearchForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
