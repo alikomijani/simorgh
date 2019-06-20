@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <!-- Custom styles for this template-->
     <link rel="stylesheet" href="{% static 'css/edu/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pwt-datepicker.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
     {% block styles %}{% endblock %}
 </head>
@@ -126,7 +127,66 @@
 
 <!-- Custom scripts for all pages-->
 <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+<script src="{% static 'js/pwt-date.js' %}"></script>
+<script src="{% static 'js/pwt-datepicker.js' %}"></script>
 <!-- Page level custom scripts -->
+<script type="text/javascript">
+    var dp;
+    $(document).ready(function () {
+        var options = {
+            format: "YYYY/MM/DD",
+            formatter: function (unix) {
+                var pdate = new persianDate(unix);
+                pdate.formatPersian = false;
+                return pdate.format("YYYY/MM/DD");
+                //return new persinDate(unix).format("YYYY/MM/DD");
+            },
+            daysTitleFormat: "YYYY MMMM",
+            observer: true,
+            sendOption: "p",
+            //position : [2, 2],
+            autoclose: true,
+            toolbox: true,
+            altField: "#alternateField",
+            altFormat: "u",
+            altFieldFormatter: function (unix) {
+                var pdate = new persianDate(unix);
+                pdate.formatPersian
+                pdate.formatPersian = false;
+                return pdate.format("YYYY MM DD");
+            },
+            onShow: function () {
+                //console.log("user config onShow event ")
+            },
+            onHide: function () {
+                //console.log("user config onHide event ")
+            },
+            onSelect: function (unix) {
+                //console.log("user config onSelect event as : "+unix)
+
+            }
+        };
+        $(".datePicker").persianDatepicker(options);
+        dp = $(".datePicker").data("datepicker");
+    });
+</script>
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>
 
 
 </body>

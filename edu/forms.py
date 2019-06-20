@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User
 from django import forms
+import jdatetime
 
 
 class CourseForm(ModelForm):
@@ -32,6 +33,7 @@ class TeacherForm(ModelForm):
     edu_degree = forms.ChoiceField(label='مدرک تحصیلی', choices=Teacher.CHOICE_DEGREE)
     photo = forms.ImageField(label='تصویر پروفایل')
     father_name = forms.CharField(label='نام پدر')
+
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'password', 'email', 'is_active']
@@ -71,10 +73,11 @@ class ClassroomForm(ModelForm):
 
 class StudentForm(ModelForm):
     student_id = forms.IntegerField(label='شماره دانش آموزی')
-    birthday = forms.DateField(label='تاریخ تولد', widget=forms.DateInput)
+    birthday = forms.CharField(label='تاریخ تولد')
     photo = forms.ImageField(label='تصویر پروفایل')
     education_field = forms.ChoiceField(choices=Student.CHOICE_education_field, label='رشته تحصیلی')
     father_name = forms.CharField(label='نام پدر')
+
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'is_active', 'email', 'password']
@@ -95,11 +98,22 @@ class StudentForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        pk = kwargs.pop('pk')
         super(StudentForm, self).__init__(*args, **kwargs)
+        student = Student.objects.get(pk=pk)
+        self.fields['student_id'].initial = student.student_id
+        jdata = jdatetime.date.fromgregorian(year=student.birthday.year, month=student.birthday.month,
+                                             day=student.birthday.day)
+        self.fields['birthday'].initial = jdata.togregorian()
+        self.fields['photo'].initial = student.photo
+        self.fields['education_field'].initial = student.education_field
+        self.fields['father_name'].initial = student.father_name
 
         for visible in self.visible_fields():
             if visible.name is 'photo':
                 visible.field.widget.attrs['class'] = 'form-control-file border'
+            elif visible.name is 'birthday':
+                visible.field.widget.attrs['class'] = 'form-control datePicker'
             else:
                 visible.field.widget.attrs['class'] = 'form-control'
 
@@ -154,7 +168,7 @@ class RegisterForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username','first_name', 'last_name', 'password', 'is_superuser', 'is_staff','email',  'is_active',
+        fields = ['username', 'first_name', 'last_name', 'password', 'is_superuser', 'is_staff', 'email', 'is_active',
                   'groups', 'user_permissions']
         labels = {
             "username": "نام کاربری",
@@ -171,9 +185,9 @@ class UserForm(ModelForm):
         help_texts = {
             "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز می‌باشد.",
             "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
-            'is_superuser':'انتخاب این گزینه تمامی دسترسی ها را به کاربر اعطا می‌کند',
+            'is_superuser': 'انتخاب این گزینه تمامی دسترسی ها را به کاربر اعطا می‌کند',
             'is_staff': 'اجازه ورود در محیط ادمین را به کاربر می‌دهد.',
-            "user_permissions":'دسترسی های کاربر را مشخص می‌کند',
+            "user_permissions": 'دسترسی های کاربر را مشخص می‌کند',
             'groups': 'گروه کاربر را مشخص می‌کند و تمامی دسترسی های لازم را به او می‌دهد'
         }
 

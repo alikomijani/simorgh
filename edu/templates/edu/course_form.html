@@ -36,7 +36,7 @@
   {% endfor %}
 
   {% for field in form.visible_fields %}
-    <div class="form-group">
+    <div class="form-group col-6 float-right">
       {{ field.label_tag }}
       {% render_field field class="form-control" %}
       {% if field.help_text %}
@@ -44,8 +44,9 @@
       {% endif %}
     </div>
   {% endfor %}
-
+<div class="col-12 float-right mb-2">
   <button type="submit" class="btn btn-primary">تایید و ثبت اطلاعات</button>
+    </div>
 </form>
 
 {% endblock %}

@@ -27,8 +27,8 @@
                                     <td>{{ student.user.first_name }}</td>
                                     <td>نام خانوادگی:</td>
                                     <td>{{ student.user.last_name }}</td>
-                                    <td rowspan="3"><img alt='عکس دانش آموز' height="150px"
-                                             src=" {{ student.photo.url }}">
+                                    <td rowspan="4" style="width: 150px"><img alt='عکس دانش آموز' height="150px"
+                                                                              src=" {{ student.photo.url }}">
                                 </tr>
                                 <tr>
                                     <td>تاریخ تولد:</td>
@@ -42,11 +42,50 @@
                                     <td>رشته تحصیلی:</td>
                                     <td>{{ student.get_education_field_display }}</td>
                                 </tr>
+                                <tr>
+                                    <td>پایه تحصیلی:</td>
+                                    <td>{{ student.registers.first }}</td>
+                                    <td>سال ورود به مدرسه:</td>
+                                    <td>{{ student.get_education_field_display }}</td>
+                                </tr>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">لیست کلاس های ثبت نام شده</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th width="50px">ردیف</th>
+                            <th>نام کلاس</th>
+                            <th width="100px">تعداد واحد</th>
+                            <th>استاد</th>
+                            <th>روز برگزاری</th>
+                            <th>ساعت برگزاری</th>
+                        </tr>
+                            {% for tcc in teacher_class_courses  %}
+
+                            <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ tcc.course }}</td>
+                            <td>{{ tcc.course.unit }}</td>
+                            <td>{{ tcc.teacher }}</td>
+                            <td>{{ tcc.get_class_day_display }}</td>
+                            <td>{{ tcc.get_class_time_display }}</td>
+
+                            </tr>
+
+                            {% endfor %}
+
+
+                    </table>
+                </div>
+            </div>
         </div>
+
     </div>
 {% endblock %}

@@ -1,15 +1,15 @@
 from django.shortcuts import render, reverse
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse
-from django.views.generic import ListView,CreateView,DetailView,UpdateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
-    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm , UserForm
-from django.contrib.auth.models import User,Group
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import user_passes_test,login_required
+    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import user_passes_test, login_required
+import jdatetime
+
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
-from jalali_date import datetime2jalali, date2jalali
 
 @login_required
 def index(request):
@@ -44,6 +44,7 @@ class UserDetailView(DetailView):
 class UserCreateView(CreateView):
     model = User
     form_class = UserForm
+
     # fields = '__all__'
 
     def get_success_url(self):
@@ -63,13 +64,16 @@ class StudentCreateView(CreateView):
     model = User
     form_class = StudentForm
     template_name = 'edu/student_form.html'
-    # jalali_join = datetime2jalali(request.user.date_joined).strftime('%y/%m/%d _ %H:%M:%S')
+
     def form_valid(self, form):
-        student_date = {}
-        for key in ('student_id', 'birthday', 'photo'):
-            student_date[key] = form.cleaned_data.pop(key)
+        student_data = {}
+        for key in ('student_id', 'birthday', 'photo','father_name'):
+            student_data[key] = form.cleaned_data.pop(key)
+        datelist = student_data['birthday'].split('/')
+        jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
+        student_data['birthday'] = jdata.togregorian()
         user = form.save()
-        Student.objects.create(user=user, **student_date)
+        Student.objects.create(user=user, **student_data)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -100,17 +104,43 @@ class StudentListView(ListView):
 class StudentDetailView(DetailView):
     model = Student
 
+    def get_context_data(self, **kwargs):
+        context = super(StudentDetailView, self).get_context_data(**kwargs)
+        student = Student.objects.get(pk=self.kwargs['pk'])
+        classroom = student.registers.first().classroom
+        teacher_class_courses = TeacherClassCourse.objects.filter(classroom=classroom)
+        birthday =context['student'].birthday
+        context['student'].birthday = jdatetime.date.fromgregorian(year=birthday.year,month=birthday.month,day=birthday.day)
+        print(context['student'].birthday)
+        context.update({
+            'teacher_class_courses': teacher_class_courses
+        })
+        return context
+
 
 class StudentUpdateView(UpdateView):
     model = User
     form_class = StudentForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['pk'] = self.kwargs['pk']
+        return kwargs
+
     def form_valid(self, form):
-        student_date = {}
-        for key in ('student_id', 'birthday', 'photo'):
-            student_date[key] = form.cleaned_data.pop(key)
+        student_data = {}
+        for key in ('student_id', 'birthday', 'photo','father_name'):
+            student_data[key] = form.cleaned_data.pop(key)
+        datelist = student_data['birthday'].split('/')
+        jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
+        student_data['birthday'] = jdata.togregorian()
         user = form.save()
-        Student.objects.create(user=user, **student_date)
+        student = Student.objects.get(user=user)
+        student.birthday = student_data['birthday']
+        student.photo = student_data['photo']
+        student.student_id = student_data['student_id']
+        student.father_name = student_data['father_name']
+        student.save()
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -126,7 +156,7 @@ class TeacherCreateView(CreateView):
 
     def form_valid(self, form):
         teacher_date = {}
-        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession','photo'):
+        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo'):
             teacher_date[key] = form.cleaned_data.pop(key)
         user = form.save()
         Teacher.objects.create(user=user, **teacher_date)
@@ -142,7 +172,7 @@ class TeacherUpdateView(UpdateView):
 
     def form_valid(self, form):
         teacher_date = {}
-        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession','photo'):
+        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo'):
             teacher_date[key] = form.cleaned_data.pop(key)
         user = form.save()
         Teacher.objects.create(user=user, **teacher_date)

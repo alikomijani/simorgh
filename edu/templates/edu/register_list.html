@@ -35,8 +35,8 @@
             <td>{{ register.classroom }}</td>
             <td>{{ register.student }}</td>
             <td>{{ register.classroom.education_year }}</td>
-            <td><a href="{% url 'RegisterDetail' register.pk %}"><i class="fas fa-chalkboard-teacher"></i></a></td>
-            <td><a href="{% url 'RegisterDetail' register.pk %}"><i class="fas fa-user-graduate"></i></a></td>
+            <td><a href="{% url 'ClassroomStudentDetail' register.pk %}"><i class="fas fa-chalkboard-teacher"></i></a></td>
+            <td><a href="{% url 'ClassroomCourseDetail' register.pk %}"><i class="fas fa-user-graduate"></i></a></td>
             <td><a href="{% url 'RegisterUpdate' register.pk %}"><i class="far fa-edit"></i></a></td>
         </tr>
     {% endfor %}
