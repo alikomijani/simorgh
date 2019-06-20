@@ -15,7 +15,9 @@
     <th>شماره دانش آموزی</th>
     <th>نام</th>
     <th>نام خانوادگی</th>
-    <th> نام کاربری</th>
+    <th> نام پدر</th>
+    <th> تاریخ تولد</th>
+    <th>رشته تحصیلی</th>
     <th> ایمیل</th>
     <th> ابزار</th>
 {% endblock %}
@@ -24,7 +26,9 @@
     <th>شماره دانش آموزی</th>
     <th>نام</th>
     <th>نام خانوادگی</th>
-    <th> نام کاربری</th>
+    <th> نام پدر</th>
+    <th> تاریخ تولد</th>
+    <th>رشته تحصیلی</th>
     <th> ایمیل</th>
     <th> ابزار</th>
 {% endblock %}
@@ -35,7 +39,9 @@
             <td>{{ student.student_id }}</td>
             <td>{{ student.user.first_name }}</td>
             <td>{{ student.user.last_name }}</td>
-            <td>{{ student.user.username }}</td>
+            <td>{{ student.father_name }}</td>
+            <td>{{ student.birthday }}</td>
+            <td>{{ student.get_education_field_display }}</td>
             <td><a href="mailto:{{ student.user.email }}"> {{ student.user.email }} </a></td>
             <td><a href="{% url 'StudentDetail' student.pk %}"><i
                     class="fas fa-info-circle"></i></a><a

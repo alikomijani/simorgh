@@ -69,7 +69,7 @@ class StudentCreateView(CreateView):
 
     def form_valid(self, form):
         student_data = {}
-        for key in ('student_id', 'birthday', 'photo','father_name'):
+        for key in ('student_id', 'birthday', 'photo','father_name','education_field'):
             student_data[key] = form.cleaned_data.pop(key)
         datelist = student_data['birthday'].split('/')
         jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
@@ -133,7 +133,7 @@ class StudentUpdateView(UpdateView):
 
     def form_valid(self, form):
         student_data = {}
-        for key in ('student_id', 'birthday', 'photo','father_name'):
+        for key in ('student_id', 'birthday', 'photo','father_name','education_field'):
             student_data[key] = form.cleaned_data.pop(key)
         datelist = student_data['birthday'].split('/')
         jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
@@ -144,6 +144,7 @@ class StudentUpdateView(UpdateView):
         student.photo = student_data['photo']
         student.student_id = student_data['student_id']
         student.father_name = student_data['father_name']
+        student.education_field = student_data['education_field']
         student.save()
         return super().form_valid(form)
 
