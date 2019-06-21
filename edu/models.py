@@ -118,6 +118,7 @@ class Classroom(models.Model):
     teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms',
                                       verbose_name='اساتید')
 
+
     class Meta:
         verbose_name = 'کلاس'
         verbose_name_plural = 'کلاس ها'

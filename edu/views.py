@@ -113,15 +113,15 @@ class StudentDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(StudentDetailView, self).get_context_data(**kwargs)
         student = Student.objects.get(pk=self.kwargs['pk'])
-        classroom = student.registers.first().classroom
-        teacher_class_courses = TeacherClassCourse.objects.filter(classroom=classroom)
         birthday = context['student'].birthday
         context['student'].birthday = jdatetime.date.fromgregorian(year=birthday.year, month=birthday.month,
                                                                    day=birthday.day)
-        print(context['student'].birthday)
-        context.update({
-            'teacher_class_courses': teacher_class_courses
-        })
+        if student.registers.first() is not None:
+            classroom = student.registers.first().classroom
+            teacher_class_courses = TeacherClassCourse.objects.filter(classroom=classroom)
+            context.update({
+                'teacher_class_courses': teacher_class_courses
+            })
         return context
 
 
