@@ -33,8 +33,8 @@
             <td>{{ register.classroom.level_field }}</td>
             <td>{{ register.classroom.get_branch_display }}</td>
             <td>{{ register.classroom.education_year }}</td>
-            <td><a href="{% url 'ClassroomCourseDetail' register.classroom.pk %}"><i class="fas fa-chalkboard-teacher"></i></a></td>
-            <td><a href="{% url 'ClassroomStudentDetail' register.classroom.pk %}"><i class="fas fa-user-graduate"></i></a></td>
+            <td align="center"><a href="{% url 'ClassroomCourseDetail' register.classroom.pk %}"><i class="fas fa-chalkboard-teacher"></i></a></td>
+            <td align="center"><a href="{% url 'ClassroomStudentDetail' register.classroom.pk %}"><i class="fas fa-user-graduate"></i></a></td>
         </tr>
     {% endfor %}
 {% endblock %}
