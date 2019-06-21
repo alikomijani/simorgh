@@ -3,11 +3,22 @@ from django.conf.urls import url, include, handler404
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^login/$', auth_views.LoginView.as_view(template_name='edu/login.html'), name='login'),
-    url(r'^register/$', auth_views.LoginView.as_view(template_name='edu/login.html'), name='register'),
-    url(r'^logout/$', auth_views.LogoutView.as_view(template_name='edu/logout.html'), name='logout'),
-    url(r'^password_reset/$', auth_views.PasswordChangeView.as_view(), {'template_name': 'login.html'},
+    url(r'^login/$', auth_views.LoginView.as_view(template_name='register/login.html'), name='login'),
+    url(r'^register/$', auth_views.LoginView.as_view(template_name='register/login.html'), name='register'),
+    url(r'^logout/$', auth_views.LogoutView.as_view(template_name='register/logout.html'), name='logout'),
+    url(r'^password/$', views.change_password, name='change_password'),
+    url(r'^password_reset/$',
+        auth_views.PasswordResetView.as_view(template_name='register/password_reset_form.html'),
         name='password_reset'),
+    url(r'^password_reset/done/$',
+        auth_views.PasswordResetDoneView.as_view(template_name='register/password_reset_done.html'),
+        name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        auth_views.PasswordResetConfirmView.as_view(template_name='register/password_reset_confirm.html'),
+        name='password_reset_confirm'),
+    url(r'^reset/done/$',
+        auth_views.PasswordResetCompleteView.as_view(template_name='register/password_reset_complete.html'),
+        name='password_reset_complete'),
     url(r'^$', views.index, name="dashboard"),
 
 ]
@@ -69,7 +80,4 @@ urlpatterns += [
     url(r'^register/details/(?P<pk>[0-9]+)/$', views.RegisterDetail.as_view(), name='RegisterDetail'),
     url(r'^register/create/$', views.RegisterCreate.as_view(), name='RegisterCreate'),
     url(r'^register/edit/(?P<pk>[0-9]+)/$', views.RegisterUpdate.as_view(), name='RegisterUpdate'),
-]
-urlpatterns += [
-    url(r'^password/$', views.change_password, name='change_password'),
 ]

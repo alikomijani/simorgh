@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'edu',
 
 ]
-
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
