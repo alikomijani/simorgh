@@ -70,3 +70,6 @@ urlpatterns += [
     url(r'^register/create/$', views.RegisterCreate.as_view(), name='RegisterCreate'),
     url(r'^register/edit/(?P<pk>[0-9]+)/$', views.RegisterUpdate.as_view(), name='RegisterUpdate'),
 ]
+urlpatterns += [
+    url(r'^password/$', views.change_password, name='change_password'),
+]

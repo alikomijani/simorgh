@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse,redirect
 from django.utils.decorators import method_decorator
 
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse, ClassTime, \
@@ -10,9 +10,27 @@ from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearch
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import user_passes_test, login_required
 import jdatetime
-
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    print(form)
+    return render(request, 'edu/change_password.html', {
+        'form': form
+    })
 
 @login_required
 def index(request):
