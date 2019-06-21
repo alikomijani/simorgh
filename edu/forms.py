@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User
+from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User, StudentCourse
 from django import forms
 import jdatetime
 
@@ -98,7 +98,7 @@ class StudentForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        pk =None
+        pk = None
         if 'pk' in kwargs.keys():
             pk = kwargs.pop('pk')
         super(StudentForm, self).__init__(*args, **kwargs)
@@ -111,7 +111,6 @@ class StudentForm(ModelForm):
             self.fields['education_field'].initial = student.education_field
             self.fields['father_name'].initial = student.father_name
             self.fields['student_id'].initial = student.student_id
-
 
         for visible in self.visible_fields():
             if visible.name is 'photo':
@@ -197,3 +196,9 @@ class UserForm(ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
             if visible.name is 'is_superuser' or visible.name is 'is_staff' or visible.name is 'is_active':
                 visible.field.widget.attrs['class'] = 'custom-control custom-checkbox'
+
+
+class StudentCourseForm(ModelForm):
+    class Meta:
+        model = StudentCourse
+        fields = "__all__"

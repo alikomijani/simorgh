@@ -2,15 +2,18 @@ from . import views
 from django.conf.urls import url, include, handler404
 from django.contrib.auth import views as auth_views
 
-
-
 urlpatterns = [
     url(r'^login/$', auth_views.LoginView.as_view(template_name='edu/login.html'), name='login'),
     url(r'^register/$', auth_views.LoginView.as_view(template_name='edu/login.html'), name='register'),
     url(r'^logout/$', auth_views.LogoutView.as_view(template_name='edu/logout.html'), name='logout'),
-    url(r'^password_reset/$', auth_views.PasswordChangeView.as_view(), {'template_name': 'login.html'}, name='password_reset'),
+    url(r'^password_reset/$', auth_views.PasswordChangeView.as_view(), {'template_name': 'login.html'},
+        name='password_reset'),
     url(r'^$', views.index, name="dashboard"),
 
+]
+# student_course
+urlpatterns += [url(
+    r'^student_course/list/(?P<pk>[0-9]+)$', views.StudentCourseListView.as_view(), name='StudentCourseListView'),
 ]
 # student
 urlpatterns += [

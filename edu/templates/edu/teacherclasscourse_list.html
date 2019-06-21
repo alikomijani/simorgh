@@ -15,8 +15,8 @@
     <th style="text-align: center">نام درس</th>
     <th style="text-align: center">کلاس</th>
     <th style="text-align: center;">نام استاد</th>
-    <th style="text-align: center;width: 100px;">روز برگزاری</th>
-    <th style="text-align: center;width: 100px;">زمان برگزاری</th>
+    <th style="text-align: center;">نمرات</th>
+
     <th style="text-align: center;width: 120px;">ابزار</th>
 {% endblock %}
 {% block tabel_footer %}
@@ -24,8 +24,8 @@
     <th style="text-align: center">نام درس</th>
     <th style="text-align: center">کلاس</th>
     <th style="text-align: center;">نام استاد</th>
-    <th style="text-align: center;width: 100px;">روز برگزاری</th>
-    <th style="text-align: center;width: 100px;">زمان برگزاری</th>
+    <th style="text-align: center;">نمرات</th>
+
     <th style="text-align: center;width: 120px;">ابزار</th>
 {% endblock %}
 {% block tabel_body %}
@@ -35,8 +35,8 @@
             <td style="text-align: center">{{ classroom.course }}</td>
             <td style="text-align: center">{{ classroom.classroom }}</td>
             <td style="text-align: center">{{ classroom.teacher.user.first_name }} {{ classroom.teacher.user.last_name }}</td>
-            <td style="text-align: center">{{ classroom.get_class_day_display }}</td>
-            <td style="text-align: center">{{ classroom.get_class_time_display }}</td>
+            <td style="text-align: center"><a href="{% url 'StudentCourseListView' classroom.pk %}"><i class="fas fa-info-circle"></i></a></td>
+
             <td style="text-align: center;width: 120px;">
                 <a href="{% url 'TeacherClassCourseEdit' classroom.pk %}"><i class="far fa-edit"></i></a>
                 <a href="{% url 'TeacherClassCourseDetails' classroom.pk %}"><i class="fas fa-info-circle"></i></a>

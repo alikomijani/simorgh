@@ -1,0 +1,67 @@
+{% extends 'tablesbase.html' %}
+{% load static from staticfiles %}
+{% block title %}
+    {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
+{% endblock %}
+{% block dashboard-title %}
+    لیست نمرات دانش آموزان
+{% endblock %}
+
+{% block tabel_title %}جدول نمرات دانش آموزان {% endblock %}
+{% block tabel_new_item_link %}{% url 'StudentCreateView' %}{% endblock %}
+{% block tabel_new_item %} ثبت نمره {% endblock %}
+{% block tabel_header %}
+    <th style="width:25px;">ردیف</th>
+    <th>شماره دانش آموزی</th>
+    <th>نام</th>
+    <th>نام خانوادگی</th>
+    <th>نمره کلاسی</th>
+    <th>نمره پایانی</th>
+{% endblock %}
+{% block tabel_footer %}
+    <th style="width:25px;">ردیف</th>
+    <th>شماره دانش آموزی</th>
+    <th>نام</th>
+    <th>نام خانوادگی</th>
+    <th>نمره کلاسی</th>
+    <th>نمره پایانی</th>
+{% endblock %}
+{% block tabel_body %}
+    {% for stcourse in studentcourse_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ stcourse.student.student_id}}</td>
+            <td>{{ stcourse.student.user.first_name }}</td>
+            <td>{{ stcourse.student.user.last_name }}</td>
+            <td>{{ stcourse.mid_grade }}</td>
+            <td>{{ stcourse.final_grade_grade }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+{% block filter_form %}
+    <form class="form">
+        {% csrf_token %}
+
+        {{ search.non_field_errors }}
+        <div class="form-group">
+            {{ search.subject.errors }}
+            <label for="{{ search.first_name.id_for_label }}">نام: </label>
+            {{ search.first_name }}
+        </div>
+        <div class="form-group">
+            {{ search.message.errors }}
+            <label for="{{ search.last_name.id_for_label }}">نام خانوادگی: </label>
+            {{ search.last_name }}
+        </div>
+        <div class="form-group">
+            {{ search.sender.errors }}
+            <label for="{{ search.user_name.id_for_label }}">نام کاربری :</label>
+            {{ search.user_name }}
+        </div>
+
+
+        <div>
+            <button type="submit" class="btn btn-light">جست و جو</button>
+        </div>
+    </form>
+{% endblock %}

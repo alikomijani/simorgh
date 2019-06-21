@@ -8,10 +8,12 @@ import jdatetime
 
 # abstract person
 class Person(models.Model):
-    birthday = models.DateField(verbose_name='تاریخ تولد',blank=True,null=True)
-    last_modified_date = models.DateTimeField(verbose_name='تاریخ آخرین ویرایش', auto_now_add=True,blank=True,null=True)
-    photo = models.ImageField(upload_to='profiles', null=True, blank=True , verbose_name='تصویر پروفایل')
-    father_name = models.CharField(max_length = 40,verbose_name='نام پدر',blank=True,null=True)
+    birthday = models.DateField(verbose_name='تاریخ تولد', blank=True, null=True)
+    last_modified_date = models.DateTimeField(verbose_name='تاریخ آخرین ویرایش', auto_now_add=True, blank=True,
+                                              null=True)
+    photo = models.ImageField(upload_to='profiles', null=True, blank=True, verbose_name='تصویر پروفایل')
+    father_name = models.CharField(max_length=40, verbose_name='نام پدر', blank=True, null=True)
+
     class Meta:
         abstract = True
 
@@ -32,7 +34,7 @@ class Student(Person, models.Model):
     )
 
     education_field = models.CharField(max_length=2, choices=CHOICE_education_field, verbose_name='رشته تحصیلی',
-                                       blank=True,null=True)
+                                       blank=True, null=True)
 
     class Meta:
         verbose_name = 'دانش آموز'
@@ -40,6 +42,14 @@ class Student(Person, models.Model):
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
+
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @property
+    def last_name(self):
+        return self.user.last_name
 
 
 class Teacher(Person, models.Model):
@@ -151,6 +161,10 @@ class TeacherClassCourse(models.Model):
                                verbose_name='نام درس')
     classroom = models.ForeignKey('Classroom', related_name='teacher_class_course', on_delete=models.SET_NULL,
                                   null=True, verbose_name='پایه تحصیلی')
+    class_time = models.ManyToManyField('ClassTime', related_name='teacher_class_course', verbose_name='زمان کلاس')
+
+
+class ClassTime(models.Model):
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'
     CHOICE_DAY = (
         (SATURDAY, 'شنبه'),
@@ -171,3 +185,13 @@ class TeacherClassCourse(models.Model):
         (FIFTH, 'زنگ پنجم'),
     )
     class_time = models.CharField(max_length=2, choices=CHOICE_TIME, verbose_name='زنگ', blank=True, null=True)
+
+    def __str__(self):
+        return self.get_class_day_display() + ' ' + self.get_class_time_display()
+
+
+class StudentPresence(models.Model):
+    student_course = models.ForeignKey('StudentCourse', on_delete=models.CASCADE)
+    presence = models.BooleanField(verbose_name='حاضر')
+    data = models.DateField('تاریخ')
+    class_time = models.ForeignKey('ClassTime', on_delete=models.SET_NULL, null=True)

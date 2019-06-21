@@ -1,11 +1,12 @@
 from django.shortcuts import render, reverse
 from django.utils.decorators import method_decorator
 
-from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse
+from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse, ClassTime, \
+    StudentPresence
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
-    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm
+    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm, StudentCourseForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import user_passes_test, login_required
 import jdatetime
@@ -17,7 +18,8 @@ check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.gr
 def index(request):
     return render(request, 'edu/index.html')
 
-@method_decorator(check_admin,name='dispatch')
+
+@method_decorator(check_admin, name='dispatch')
 class UserListView(ListView):
     model = User
     form_class = UserSearchForm
@@ -69,12 +71,12 @@ class StudentCreateView(CreateView):
 
     def form_valid(self, form):
         student_data = {}
-        for key in ('student_id', 'birthday', 'photo','father_name','education_field'):
+        for key in ('student_id', 'birthday', 'photo', 'father_name', 'education_field'):
             student_data[key] = form.cleaned_data.pop(key)
         datelist = student_data['birthday'].split('/')
         jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
         student_data['birthday'] = jdata.togregorian()
-        group=Group.objects.get(name='student')
+        group = Group.objects.get(name='student')
         user = form.save()
         group.user_set.add(user)
         Student.objects.create(user=user, **student_data)
@@ -113,8 +115,9 @@ class StudentDetailView(DetailView):
         student = Student.objects.get(pk=self.kwargs['pk'])
         classroom = student.registers.first().classroom
         teacher_class_courses = TeacherClassCourse.objects.filter(classroom=classroom)
-        birthday =context['student'].birthday
-        context['student'].birthday = jdatetime.date.fromgregorian(year=birthday.year,month=birthday.month,day=birthday.day)
+        birthday = context['student'].birthday
+        context['student'].birthday = jdatetime.date.fromgregorian(year=birthday.year, month=birthday.month,
+                                                                   day=birthday.day)
         print(context['student'].birthday)
         context.update({
             'teacher_class_courses': teacher_class_courses
@@ -133,7 +136,7 @@ class StudentUpdateView(UpdateView):
 
     def form_valid(self, form):
         student_data = {}
-        for key in ('student_id', 'birthday', 'photo','father_name','education_field'):
+        for key in ('student_id', 'birthday', 'photo', 'father_name', 'education_field'):
             student_data[key] = form.cleaned_data.pop(key)
         datelist = student_data['birthday'].split('/')
         jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
@@ -165,7 +168,7 @@ class TeacherCreateView(CreateView):
             teacher_date[key] = form.cleaned_data.pop(key)
         user = form.save()
         Teacher.objects.create(user=user, **teacher_date)
-        group=Group.objects.get(name='teacher')
+        group = Group.objects.get(name='teacher')
         user = form.save()
         group.user_set.add(user)
         return super().form_valid(form)
@@ -330,5 +333,20 @@ class RegisterList(ListView):
     model = Register
 
 
+class StudentCourseListView(ListView):
+    model = StudentCourse
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        queryset = super().get_queryset()
+        tcc = TeacherClassCourse.objects.get(pk=pk)
+        queryset = queryset.filter(student__registers__classroom=tcc.classroom, course=tcc.course)
+        return queryset
+
+
 def error_404_view(request, exception):
     return render(request, '404.html')
+
+
+class StudentPresenceList(ListView):
+    model = StudentPresence

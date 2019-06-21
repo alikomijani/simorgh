@@ -1,0 +1,67 @@
+{% extends 'tablesbase.html' %}
+{% load static from staticfiles %}
+{% block title %}
+    {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
+{% endblock %}
+{% block dashboard-title %}
+    لیست دانش آموزان
+{% endblock %}
+
+{% block tabel_title %}جدول اطلاعات دانش آموزان {% endblock %}
+{% block tabel_new_item_link %}{% url 'StudentCreateView' %}{% endblock %}
+{% block tabel_new_item %} ثبت دانش آموز جدید{% endblock %}
+{% block tabel_header %}
+    <th style="width:25px;">ردیف</th>
+    <th>شماره دانش آموزی</th>
+    <th>نام</th>
+    <th>نام خانوادگی</th>
+
+{% endblock %}
+{% block tabel_footer %}
+    <th style="width:25px;">ردیف</th>
+    <th>شماره دانش آموزی</th>
+    <th>نام</th>
+    <th>نام خانوادگی</th>
+
+
+{% endblock %}
+{% block tabel_body %}
+    {% for presence in studentpresence_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ presence.student_course.student.student_id }}</td>
+            <td>{{ presence.student_course.student.first_name }}</td>
+            <td>{{ presence.student_course.student.last_name }}</td>
+
+
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+{% block filter_form %}
+    <form class="form">
+        {% csrf_token %}
+
+        {{ search.non_field_errors }}
+        <div class="form-group">
+            {{ search.subject.errors }}
+            <label for="{{ search.first_name.id_for_label }}">نام: </label>
+            {{ search.first_name }}
+        </div>
+        <div class="form-group">
+            {{ search.message.errors }}
+            <label for="{{ search.last_name.id_for_label }}">نام خانوادگی: </label>
+            {{ search.last_name }}
+        </div>
+        <div class="form-group">
+            {{ search.sender.errors }}
+            <label for="{{ search.user_name.id_for_label }}">نام کاربری :</label>
+            {{ search.user_name }}
+        </div>
+
+
+        <div>
+            <button type="submit" class="btn btn-light">جست و جو</button>
+        </div>
+    </form>
+{% endblock %}
