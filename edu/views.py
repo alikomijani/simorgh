@@ -66,9 +66,6 @@ class UserDetailView(DetailView):
 class UserCreateView(CreateView):
     model = User
     form_class = UserForm
-
-    # fields = '__all__'
-
     def get_success_url(self):
         return reverse('UserListView')
 

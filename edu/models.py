@@ -118,7 +118,6 @@ class Classroom(models.Model):
     teachers = models.ManyToManyField('Teacher', through='TeacherClassCourse', related_name='classrooms',
                                       verbose_name='اساتید')
 
-
     class Meta:
         verbose_name = 'کلاس'
         verbose_name_plural = 'کلاس ها'
@@ -152,7 +151,7 @@ class StudentCourse(models.Model):
 class Register(models.Model):
     classroom = models.ForeignKey('Classroom', related_name='registers', on_delete=models.SET_NULL, null=True)
     student = models.ForeignKey('Student', related_name='registers', on_delete=models.SET_NULL, null=True)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(verbose_name='فعال', help_text='برای غیرفعال کردن کلاس از این گزینه استفاده کنید',default=True)
 
 
 class TeacherClassCourse(models.Model):
@@ -163,6 +162,8 @@ class TeacherClassCourse(models.Model):
     classroom = models.ForeignKey('Classroom', related_name='teacher_class_course', on_delete=models.SET_NULL,
                                   null=True, verbose_name='پایه تحصیلی')
     class_time = models.ManyToManyField('ClassTime', related_name='teacher_class_course', verbose_name='زمان کلاس')
+    is_active = models.BooleanField(verbose_name='فعال', help_text='برای غیرفعال کردن کلاس از این گزینه استفاده کنید',
+                                    default=True)
 
 
 class ClassTime(models.Model):
