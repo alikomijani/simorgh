@@ -110,6 +110,10 @@ class StudentListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(StudentListView, self).get_context_data(**kwargs)
+
+        for student in context['student_list']:
+            b= student.birthday
+            student.birthday = jdatetime.date.fromgregorian(year=b.year,month=b.month,day=b.day)
         context.update({
             'search': self.form_class()
         })

@@ -11,8 +11,8 @@
 {% block tabel_new_item_link %}{% url 'StudentCreateView' %}{% endblock %}
 {% block tabel_new_item %} ثبت دانش آموز جدید{% endblock %}
 {% block tabel_header %}
-    <th style="width:25px;">ردیف</th>
-    <th>شماره دانش آموزی</th>
+    <th style="max-width:35px;">ردیف</th>
+    <th width="130px">شماره دانش آموزی</th>
     <th>نام</th>
     <th>نام خانوادگی</th>
     <th> نام پدر</th>
@@ -41,8 +41,8 @@
             <td>{{ student.birthday }}</td>
             <td>{{ student.get_education_field_display }}</td>
 
-            <td><a href="{% url 'StudentDetail' student.pk %}"><i
-                    class="fas fa-info-circle"></i></a><a
+            <td align="center"><a href="{% url 'StudentDetail' student.pk %}"><i
+                    class="fas fa-info-circle ml-1"></i></a><a
                     href="{% url 'StudentEdit' student.pk %}"><i class="far fa-edit"></i></a>
             </td>
         </tr>
