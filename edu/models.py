@@ -178,13 +178,12 @@ class ClassTime(models.Model):
         (FRIDAY, 'جمعه'),
     )
     class_day = models.CharField(max_length=2, choices=CHOICE_DAY, verbose_name='روز کلاس', blank=True, null=True)
-    FIRST, SECOND, THIRD, FORTH, FIFTH = 'FI', 'SE', 'TH', 'FO', 'FI'
+    FIRST, SECOND, THIRD, FORTH= 'FI', 'SE', 'TH', 'FO'
     CHOICE_TIME = (
         (FIRST, 'زنگ اول'),
         (SECOND, 'زنگ دوم'),
         (THIRD, 'زنگ سوم'),
         (FORTH, 'زنگ چهارم'),
-        (FIFTH, 'زنگ پنجم'),
     )
     class_time = models.CharField(max_length=2, choices=CHOICE_TIME, verbose_name='زنگ', blank=True, null=True)
 
