@@ -161,7 +161,7 @@ class TeacherClassCourse(models.Model):
                                verbose_name='نام درس')
     classroom = models.ForeignKey('Classroom', related_name='teacher_class_course', on_delete=models.SET_NULL,
                                   null=True, verbose_name='پایه تحصیلی')
-    class_time = models.ManyToManyField('ClassTime', related_name='teacher_class_course', verbose_name='زمان کلاس')
+    class_times = models.ManyToManyField('ClassTime', related_name='teacher_class_course', verbose_name='زمان کلاس')
     is_active = models.BooleanField(verbose_name='فعال', help_text='برای غیرفعال کردن کلاس از این گزینه استفاده کنید',
                                     default=True)
 
@@ -189,7 +189,12 @@ class ClassTime(models.Model):
 
     def __str__(self):
         return self.get_class_day_display() + ' ' + self.get_class_time_display()
-
+    @property
+    def time(self):
+        return self.get_class_time_display()
+    @property
+    def day(self):
+        return self.get_class_day_display()
 
 class StudentPresence(models.Model):
     student_course = models.ForeignKey('StudentCourse', on_delete=models.CASCADE)

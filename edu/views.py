@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse,redirect
+from django.shortcuts import render, reverse, redirect
 from django.utils.decorators import method_decorator
 
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse, ClassTime, \
@@ -13,7 +13,9 @@ import jdatetime
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
+
 
 def change_password(request):
     if request.method == 'POST':
@@ -31,6 +33,7 @@ def change_password(request):
     return render(request, 'edu/change_password.html', {
         'form': form
     })
+
 
 @login_required
 def index(request):
@@ -66,6 +69,7 @@ class UserDetailView(DetailView):
 class UserCreateView(CreateView):
     model = User
     form_class = UserForm
+
     def get_success_url(self):
         return reverse('UserListView')
 
@@ -109,8 +113,8 @@ class StudentListView(ListView):
         context = super(StudentListView, self).get_context_data(**kwargs)
 
         for student in context['student_list']:
-            b= student.birthday
-            student.birthday = jdatetime.date.fromgregorian(year=b.year,month=b.month,day=b.day)
+            b = student.birthday
+            student.birthday = jdatetime.date.fromgregorian(year=b.year, month=b.month, day=b.day)
         context.update({
             'search': self.form_class()
         })
@@ -140,6 +144,26 @@ class StudentDetailView(DetailView):
             teacher_class_courses = TeacherClassCourse.objects.filter(classroom=classroom)
             context.update({
                 'teacher_class_courses': teacher_class_courses
+            })
+            class_day_time = {}
+            for day in ('SA', 'SU','MO', 'TU', 'WE', 'TH', 'FR' ):
+                class_day_time.setdefault(day, {})
+                for time in ('FI', 'SE', 'TH', 'FO'):
+                    class_day_time[day][time] = ''
+
+            for tcc in teacher_class_courses:
+                for time in tcc.class_times.all():
+                    class_day_time[time.class_day][time.class_time] = tcc.course.name
+            class_day_time['شنبه'] =class_day_time.pop('SA')
+            class_day_time['یکشنبه'] =class_day_time.pop('SU')
+            class_day_time['دوشنبه'] =class_day_time.pop('MO')
+            class_day_time['سه شنبه'] =class_day_time.pop('TU')
+            class_day_time['چهارشنبه'] =class_day_time.pop('WE')
+            class_day_time['پنجشنبه'] =class_day_time.pop('TH')
+            class_day_time['جمعه'] =class_day_time.pop('FR')
+
+            context.update({
+                'class_day_time': class_day_time
             })
         return context
 
