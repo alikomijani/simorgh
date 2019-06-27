@@ -54,64 +54,60 @@
                 </div>
             </div>
         </div>
-            <div class="col-lg-6">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">لیست کلاس های ثبت نام شده</h6>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <tr>
-                                <th width="50px">ردیف</th>
-                                <th>نام کلاس</th>
-                                <th width="100px">تعداد واحد</th>
-                                <th>استاد</th>
-{#                                <th>روز برگزاری</th>#}
-                            </tr>
-                            {% for tcc in teacher_class_courses %}
 
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ tcc.course }}</td>
-                                    <td>{{ tcc.course.unit }}</td>
-                                    <td>{{ tcc.teacher }}</td>
-{#                                    <td> {% for ct in tcc.class_times.all %}#}
-{#                                        {{ ct }}#}
-{#                                    {% endfor %}#}
-{#                                    </td>#}
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
+        {#برنامه کلاسی#}
+        <div class="col-lg-7">
+            <div class="card shadow mb-4 ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">برنامه کلاسی</h6>
                 </div>
-            </div>
-{#برنامه کلاسی#}
-            <div class="col-lg-6">
-                <div class="card shadow mb-4 ">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">برنامه کلاسی</h6>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-striped">
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th>روز - زنگ</th>
+                            <th class="text-center">زنگ اول</th>
+                            <th class="text-center">زنگ دوم</th>
+                            <th class="text-center">زنگ سوم</th>
+                            <th class="text-center">زنگ چهارم</th>
+                        </tr>
+                        {% for day,times in class_day_time.items %}
                             <tr>
-                                <th>روز - زنگ</th>
-                                <th class="text-center">زنگ اول</th>
-                                <th class="text-center">زنگ دوم</th>
-                                <th class="text-center">زنگ سوم</th>
-                                <th class="text-center">زنگ چهارم</th>
+                                <th>{{ day }}</th>
+                                {% for time,course in times.items %}
+                                    <th class="text-center">{{ course }}</th>
+                                {% endfor %}
                             </tr>
-                            {% for day,times in class_day_time.items %}
-                                <tr>
-                                    <th>{{ day }}</th>
-                                    {% for time,course in times.items %}
-                                        <th class="text-center">{{ course }}</th>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
+                        {% endfor %}
+                    </table>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">لیست کلاس های ثبت نام شده</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th width="50px">ردیف</th>
+                            <th>نام کلاس</th>
+                            <th width="100px">تعداد واحد</th>
+                            <th>استاد</th>
+                        </tr>
+                        {% for tcc in teacher_class_courses %}
+
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ tcc.course }}</td>
+                                <td>{{ tcc.course.unit }}</td>
+                                <td>{{ tcc.teacher }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
 
     </div>
 {% endblock %}

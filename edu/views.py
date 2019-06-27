@@ -146,7 +146,7 @@ class StudentDetailView(DetailView):
                 'teacher_class_courses': teacher_class_courses
             })
             class_day_time = {}
-            for day in ('SA', 'SU','MO', 'TU', 'WE', 'TH', 'FR' ):
+            for day in ('SA', 'SU', 'MO', 'TU', 'WE', 'TH', 'FR'):
                 class_day_time.setdefault(day, {})
                 for time in ('FI', 'SE', 'TH', 'FO'):
                     class_day_time[day][time] = ''
@@ -154,13 +154,13 @@ class StudentDetailView(DetailView):
             for tcc in teacher_class_courses:
                 for time in tcc.class_times.all():
                     class_day_time[time.class_day][time.class_time] = tcc.course.name
-            class_day_time['شنبه'] =class_day_time.pop('SA')
-            class_day_time['یکشنبه'] =class_day_time.pop('SU')
-            class_day_time['دوشنبه'] =class_day_time.pop('MO')
-            class_day_time['سه شنبه'] =class_day_time.pop('TU')
-            class_day_time['چهارشنبه'] =class_day_time.pop('WE')
-            class_day_time['پنجشنبه'] =class_day_time.pop('TH')
-            class_day_time['جمعه'] =class_day_time.pop('FR')
+            class_day_time['شنبه'] = class_day_time.pop('SA')
+            class_day_time['یکشنبه'] = class_day_time.pop('SU')
+            class_day_time['دوشنبه'] = class_day_time.pop('MO')
+            class_day_time['سه شنبه'] = class_day_time.pop('TU')
+            class_day_time['چهارشنبه'] = class_day_time.pop('WE')
+            class_day_time['پنجشنبه'] = class_day_time.pop('TH')
+            class_day_time['جمعه'] = class_day_time.pop('FR')
 
             context.update({
                 'class_day_time': class_day_time
@@ -260,7 +260,35 @@ class TeacherListView(ListView):
 
 class TeacherDetailView(DetailView):
     model = Teacher
+    def get_context_data(self, **kwargs):
+        context = super(TeacherDetailView, self).get_context_data(**kwargs)
+        teacher = Teacher.objects.get(pk=self.kwargs['pk'])
+        teacher_class_courses = TeacherClassCourse.objects.filter(teacher =teacher)
 
+        context.update({
+           'teacher_class_course':teacher_class_courses
+        })
+        class_day_time = {}
+        for day in ('SA', 'SU', 'MO', 'TU', 'WE', 'TH', 'FR'):
+            class_day_time.setdefault(day, {})
+            for time in ('FI', 'SE', 'TH', 'FO'):
+                class_day_time[day][time] = ''
+
+        for tcc in teacher_class_courses:
+            for time in tcc.class_times.all():
+                class_day_time[time.class_day][time.class_time] = (tcc.course.name,tcc.classroom)
+        class_day_time['شنبه'] = class_day_time.pop('SA')
+        class_day_time['یکشنبه'] = class_day_time.pop('SU')
+        class_day_time['دوشنبه'] = class_day_time.pop('MO')
+        class_day_time['سه شنبه'] = class_day_time.pop('TU')
+        class_day_time['چهارشنبه'] = class_day_time.pop('WE')
+        class_day_time['پنجشنبه'] = class_day_time.pop('TH')
+        class_day_time['جمعه'] = class_day_time.pop('FR')
+
+        context.update({
+            'class_day_time': class_day_time
+        })
+        return context
 
 # TeacherClassCourse CRUD
 class TeacherClassCourseDetailView(DetailView):
