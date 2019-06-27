@@ -56,6 +56,32 @@
             </div>
         </div>
         <div class="col-lg-12">
+            <div class="card shadow mb-4 ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">برنامه کلاسی</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th>روز - زنگ</th>
+                            <th class="text-center">زنگ اول</th>
+                            <th class="text-center">زنگ دوم</th>
+                            <th class="text-center">زنگ سوم</th>
+                            <th class="text-center">زنگ چهارم</th>
+                        </tr>
+                        {% for day,times in class_day_time.items %}
+                            <tr>
+                                <th>{{ day }}</th>
+                                {% for time,course  in times.items %}
+                                    <th class="text-center">{{ course.0 }}<br>{{ course.1 }}</th>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">لیست کلاس های ثبت نام شده</h6>
@@ -65,7 +91,7 @@
                         <tr>
                             <th width="50px">ردیف</th>
                             <th>نام درس</th>
-                            <th >مقطع برگزاری</th>
+                            <th>مقطع برگزاری</th>
                             <th>برنامه هفتگی</th>
 
                         </tr>
@@ -86,33 +112,5 @@
 
             </div>
         </div>
-        <div class="col-lg-12">
-            <div class="card shadow mb-4 ">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">برنامه کلاسی</h6>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <tr>
-                                <th>روز - زنگ</th>
-                                <th class="text-center">زنگ اول</th>
-                                <th class="text-center">زنگ دوم</th>
-                                <th class="text-center">زنگ سوم</th>
-                                <th class="text-center">زنگ چهارم</th>
-                            </tr>
-                            {% for day,times in class_day_time.items %}
-                                <tr>
-                                    <th>{{ day }}</th>
-                                    {% for time,course  in times.items %}
-                                        <th class="text-center">{{ course.0 }}<br>{{ course.1 }}</th>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-        </div>
-
-
     </div>
 {% endblock %}
