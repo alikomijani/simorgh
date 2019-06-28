@@ -23,13 +23,14 @@
                         <div class="card-body">
                             <table class="table table-bordered table-striped">
                                 <tr>
-                                    <td>نام:</td>
-                                    <td>{{ teacher.user.first_name }}</td>
-                                    <td>نام خانوادگی:</td>
+                                    <td width="200px;">نام:</td>
+                                    <td >{{ teacher.user.first_name }}</td>
+                                    <td width="200px;">نام خانوادگی:</td>
                                     <td>{{ teacher.user.last_name }}</td>
-                                    <td rowspan="4" style="text-align: left;width: 150px;"><img alt='عکس دانش آموز'
-                                                                                                height="150px"
-                                                                                                src=" {{ teacher.photo.url }}">
+                                    <td rowspan="4" style="text-align: left;width: 150px;">
+                                        <img alt='عکس دانش آموز'
+                                             height="150px"
+                                             src=" {{ teacher.photo.url }}">
                                 </tr>
                                 <tr>
                                     <td>تاریخ تولد:</td>
@@ -43,12 +44,6 @@
                                     <td>مدرک تحصیلی:</td>
                                     <td>{{ teacher.get_edu_degree_display }}</td>
                                 </tr>
-                                <tr>
-                                    {#                                    <td>پایه تحصیلی:</td>#}
-                                    {#                                    <td>{{ student.registers.first }}</td>#}
-                                    {#                                    <td>سال ورود به مدرسه:</td>#}
-                                    {#                                    <td>{{ student.get_education_field_display }}</td>#}
-                                </tr>
                             </table>
                         </div>
                     </div>
@@ -57,59 +52,72 @@
         </div>
         <div class="col-lg-12">
             <div class="card shadow mb-4 ">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">برنامه کلاسی</h6>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <th>روز - زنگ</th>
-                            <th class="text-center">زنگ اول</th>
-                            <th class="text-center">زنگ دوم</th>
-                            <th class="text-center">زنگ سوم</th>
-                            <th class="text-center">زنگ چهارم</th>
-                        </tr>
-                        {% for day,times in class_day_time.items %}
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample1" class="d-block card-header py-3" data-toggle="collapse"
+                   role="button"
+                   aria-expanded="true" aria-controls="collapseCardExample1">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        برنامه کلاسی</h6>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse show" id="collapseCardExample1">
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
                             <tr>
-                                <th>{{ day }}</th>
-                                {% for time,course  in times.items %}
-                                    <th class="text-center">{{ course.0 }}<br>{{ course.1 }}</th>
-                                {% endfor %}
+                                <th>روز - زنگ</th>
+                                <th class="text-center">زنگ اول</th>
+                                <th class="text-center">زنگ دوم</th>
+                                <th class="text-center">زنگ سوم</th>
+                                <th class="text-center">زنگ چهارم</th>
                             </tr>
-                        {% endfor %}
-                    </table>
+                            {% for day,times in class_day_time.items %}
+                                <tr>
+                                    <th>{{ day }}</th>
+                                    {% for time,course  in times.items %}
+                                        <th class="text-center">{{ course.0 }}<br>{{ course.1 }}</th>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">لیست کلاس های ثبت نام شده</h6>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <th width="50px">ردیف</th>
-                            <th>نام درس</th>
-                            <th>مقطع برگزاری</th>
-                            <th>برنامه هفتگی</th>
-
-                        </tr>
-                        {% for tcc in teacher_class_course %}
-
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample2" class="d-block card-header py-3" data-toggle="collapse"
+                   role="button"
+                   aria-expanded="true" aria-controls="collapseCardExample2">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        لیست کلاس ها</h6>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse show" id="collapseCardExample2">
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ tcc.course }}</td>
-                                <td>{{ tcc.classroom }}</td>
-                                <td> {% for ct in tcc.class_times.all %}
-                                    {{ ct }}
-                                {% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+                                <th width="50px">ردیف</th>
+                                <th>نام درس</th>
+                                <th>مقطع برگزاری</th>
+                                <th>برنامه هفتگی</th>
 
+                            </tr>
+                            {% for tcc in teacher_class_course %}
+
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ tcc.course }}</td>
+                                    <td>{{ tcc.classroom }}</td>
+                                    <td> {% for ct in tcc.class_times.all %}
+                                        {{ ct }}
+                                    {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
