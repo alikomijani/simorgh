@@ -40,6 +40,7 @@
             <td style="text-align: center;width: 120px;">
                 <a href="{% url 'TeacherClassCourseEdit' classroom.pk %}"><i class="far fa-edit"></i></a>
                 <a href="{% url 'TeacherClassCourseDetails' classroom.pk %}"><i class="fas fa-info-circle"></i></a>
+                <a href="{% url 'student_presence_create' classroom.pk %}"><i class="fas fa-info-circle"></i></a>
             </td>
         </tr>
     {% endfor %}

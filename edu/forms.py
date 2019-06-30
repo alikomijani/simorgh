@@ -1,7 +1,8 @@
-from django.forms import ModelForm
-from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User, StudentCourse
+from django.forms import ModelForm, formset_factory
+from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User, StudentCourse, \
+    StudentPresence
 from django import forms
-import jdatetime,datetime
+import jdatetime, datetime
 
 
 class CourseForm(ModelForm):
@@ -28,7 +29,7 @@ class TeacherClassCourseForm(ModelForm):
 
 class TeacherForm(ModelForm):
     teacher_id = forms.IntegerField(label='کد پرسنلی')
-    hire_date = forms.CharField(label='تاریخ استخدام',initial=datetime.date.today)
+    hire_date = forms.CharField(label='تاریخ استخدام', initial=datetime.date.today)
     profession = forms.ModelMultipleChoiceField(label='تخصص', queryset=(Course.objects.all()))
     edu_degree = forms.ChoiceField(label='مدرک تحصیلی', choices=Teacher.CHOICE_DEGREE)
     photo = forms.ImageField(label='تصویر پروفایل')
@@ -220,3 +221,10 @@ class StudentCourseForm(ModelForm):
     class Meta:
         model = StudentCourse
         fields = "__all__"
+
+class StudentPresenceForm(forms.ModelForm):
+    class Meta:
+        model = StudentPresence
+        fields = ['presence']
+
+StudentPresenceFormset = formset_factory(StudentPresenceForm)

@@ -1,12 +1,16 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.forms import formset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse, redirect
 from django.utils.decorators import method_decorator
-
+import datetime
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse, ClassTime, \
     StudentPresence, LevelField
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
-    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm, StudentCourseForm
+    TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm, StudentCourseForm, \
+    StudentPresenceFormset, StudentPresenceForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import user_passes_test, login_required
 import jdatetime
@@ -453,3 +457,173 @@ def error_404_view(request, exception):
 
 class StudentPresenceList(ListView):
     model = StudentPresence
+
+class StudentPresenceCreateView(UserPassesTestMixin, CreateView):
+    model = StudentPresence
+    form_class = StudentPresenceForm
+
+    def get_student_course_list(self):
+        pk_tcc = self.kwargs.get('pk_tcc', '')
+        teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+        student_course_list = list(StudentCourse.objects.filter(
+            course=teacher_class_course.course, student__registers__classroom=teacher_class_course.classroom
+        ))
+        return student_course_list
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentPresenceCreateView, self).get_context_data(**kwargs)
+        student_course_list = self.get_student_course_list()
+        StudentPresenceFormset = formset_factory(StudentPresenceForm, extra=len(student_course_list))
+        context['formset'] = StudentPresenceFormset()
+        context['students'] = [student_course.student for student_course in student_course_list]
+        return context
+
+    def test_func(self):
+        # if Group.objects.get(name='student') in self.request.user.groups.all():
+        #     register = Register.objects.get(student=self.request.user.student, is_active=True)
+        #     tcc_list = TeacherClassCourse.objects.filter(classroom=register.classroom)
+        #     tcc_id_list = [tcc.id for tcc in tcc_list]
+        #     if int(self.kwargs['pk']) in tcc_id_list:
+        #         print(True)
+        #         return True
+        # else:
+        #     if self.request.user.is_authenticated():
+        #         raise Http404("شما نمی توانید در این نظرسنجی شرکت کنید.")
+        return True
+
+    def post(self, request, *args, **kwargs):
+        formset = StudentPresenceFormset(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+
+    def form_valid(self, formset):
+        if formset.is_valid():
+            student_course_list = self.get_student_course_list()
+            for i, form in enumerate(formset.forms):
+                student_presence = form.save(commit=False)
+                if student_presence.presence == None:
+                    student_presence.presence = False
+                student_presence.date = datetime.date.today()
+                student_presence.student_course = student_course_list[i]
+                student_presence.save()
+            return HttpResponseRedirect('/dashboard/activity/presence/{}'.format(self.kwargs['pk_tcc']))
+        return HttpResponseRedirect('/dashboard/activity/presence/{}/create'.format(self.kwargs['pk_tcc']))
+
+    class StudentPresenceListView(UserPassesTestMixin, ListView):
+        model = StudentPresence
+        template_name = 'edu/student_presence_list.html'
+
+        def test_func(self):
+            # if Group.objects.get(name='student') in self.request.user.groups.all():
+            #     register = Register.objects.get(student=self.request.user.student, is_active=True)
+            #     tcc_list = TeacherClassCourse.objects.filter(classroom=register.classroom)
+            #     tcc_id_list = [tcc.id for tcc in tcc_list]
+            #     if int(self.kwargs['pk']) in tcc_id_list:
+            #         print(True)
+            #         return True
+            # else:
+            #     if self.request.user.is_authenticated():
+            #         raise Http404("شما نمی توانید در این نظرسنجی شرکت کنید.")
+            return True
+
+        def get_student_course_list(self):
+            pk_tcc = self.kwargs.get('pk_tcc', '')
+            teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+            student_course_list = list(StudentCourse.objects.filter(
+                course=teacher_class_course.course, student__registers__classroom=teacher_class_course.classroom
+            ))
+            return student_course_list
+
+        def get_queryset(self):
+            queryset = super().get_queryset()
+            student_course_list = self.get_student_course_list()
+            queryset = queryset.filter(student_course__in=student_course_list)
+            return queryset
+
+        def get_context_data(self, **kwargs):
+            context = super(StudentPresenceListView, self).get_context_data(**kwargs)
+            pk_tcc = self.kwargs.get('pk_tcc', '')
+            teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+            context['tcc'] = teacher_class_course
+            presence_list = context['object_list']
+            date_list = presence_list.order_by().values('date').distinct()
+
+            student_course_list = self.get_student_course_list()
+            presence_date_list = []
+            for student_course in student_course_list:
+                presence_date = {}
+                presence_date['student_course'] = student_course
+                presence_date['student_presence_list'] = []
+                for date in date_list:
+                    try:
+                        presence_date['student_presence_list'].append(
+                            StudentPresence.objects.get(student_course=student_course, date=date['date']))
+                    except:
+                        presence_date['student_presence_list'].append(None)
+                presence_date_list.append(presence_date)
+            context['presence_date_list'] = presence_date_list
+            date_list = [jdatetime.date.fromgregorian(date=date['date']) for date in date_list]
+            print(date_list)
+            context['date_list'] = date_list
+            # print(context['presence_date_list'])
+            return context
+
+
+class StudentPresenceListView(UserPassesTestMixin, ListView):
+    model = StudentPresence
+    template_name = 'edu/student_presence_list.html'
+
+    def test_func(self):
+        # if Group.objects.get(name='student') in self.request.user.groups.all():
+        #     register = Register.objects.get(student=self.request.user.student, is_active=True)
+        #     tcc_list = TeacherClassCourse.objects.filter(classroom=register.classroom)
+        #     tcc_id_list = [tcc.id for tcc in tcc_list]
+        #     if int(self.kwargs['pk']) in tcc_id_list:
+        #         print(True)
+        #         return True
+        # else:
+        #     if self.request.user.is_authenticated():
+        #         raise Http404("شما نمی توانید در این نظرسنجی شرکت کنید.")
+        return True
+
+    def get_student_course_list(self):
+        pk_tcc = self.kwargs.get('pk_tcc', '')
+        teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+        student_course_list = list(StudentCourse.objects.filter(
+            course=teacher_class_course.course, student__registers__classroom=teacher_class_course.classroom
+        ))
+        return student_course_list
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        student_course_list = self.get_student_course_list()
+        queryset = queryset.filter(student_course__in=student_course_list)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentPresenceListView, self).get_context_data(**kwargs)
+        pk_tcc = self.kwargs.get('pk_tcc', '')
+        teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+        context['tcc'] = teacher_class_course
+        presence_list = context['object_list']
+        date_list = presence_list.order_by().values('date').distinct()
+
+        student_course_list = self.get_student_course_list()
+        presence_date_list = []
+        for student_course in student_course_list:
+            presence_date = {}
+            presence_date['student_course'] = student_course
+            presence_date['student_presence_list'] = []
+            for date in date_list:
+                try:
+                    presence_date['student_presence_list'].append(
+                        StudentPresence.objects.get(student_course=student_course, date=date['date']))
+                except:
+                    presence_date['student_presence_list'].append(None)
+            presence_date_list.append(presence_date)
+        context['presence_date_list'] = presence_date_list
+        date_list = [jdatetime.date.fromgregorian(date=date['date']) for date in date_list]
+        print(date_list)
+        context['date_list'] = date_list
+        # print(context['presence_date_list'])
+        return context

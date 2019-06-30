@@ -1,0 +1,39 @@
+{% extends 'tablesbase.html' %}
+{% load edu_extra %}
+{% load static from staticfiles %}
+{% block title %}
+    {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
+{% endblock %}
+{% block dashboard-title %}
+    لیست حضور و غیاب
+{% endblock %}
+{% block tabel_title %}جدول حضور و غیاب داشن آموزان{% endblock %}
+{% block tabel_new_item_link %}{% url 'TeacherClassCourseCreate' %}{% endblock %}
+{% block tabel_new_item %} ایجاد کلاس جدید{% endblock %}
+{% block tabel_header %}
+    <th>ردیف</th>
+    <th>دانش آموز</th>
+    <th>حضور</th>
+    <th>فعالیت کلاسی</th>
+{% endblock %}
+{% block tabel_footer %}
+    <th>ردیف</th>
+    <th>دانش آموز</th>
+    <th>حضور</th>
+    <th>فعالیت کلاسی</th>
+{% endblock %}
+{% block tabel_body %}
+    <form method="post" class="my-3" style="background-color: lightgoldenrodyellow">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <tr>
+                <td style="max-width: 20px;">{{ forloop.counter }}</td>
+                <td style="max-width: 100px;">{{ students|list_item:forloop.counter0 }}</td>
+                <td style="max-width: 100px;">{{ form.presence }}</td>
+                <td style="max-width: 50px;">{{ form.activity }}</td>
+            </tr>
+        {% endfor %}
+        <button type="submit" class="btn btn-success m-3">ثبت</button>
+    </form>
+{% endblock %}

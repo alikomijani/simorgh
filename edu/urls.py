@@ -85,3 +85,13 @@ urlpatterns += [
 urlpatterns += [
     url(r'^first_setup/$', views.first_setup, name='first_setup'),
 ]
+# student presence
+urlpatterns += [
+    url(r'^dashboard/activity/$', views.TeacherClassCourseListView.as_view(), name='activity'),
+    url(r'^dashboard/activity/grade/(?P<pk_tcc>[0-9]+)/students$', views.StudentCourseListView.as_view(),
+        name='students_grade'),
+    url(r'^dashboard/activity/presence/(?P<pk_tcc>[0-9]+)/create$', views.StudentPresenceCreateView.as_view(),
+        name='student_presence_create'),
+    url(r'^dashboard/activity/presence/(?P<pk_tcc>[0-9]+)$', views.StudentPresenceListView.as_view(),
+        name='student_presence_list'),
+]
