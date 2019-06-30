@@ -244,18 +244,20 @@ class TeacherUpdateView(UpdateView):
 
     def form_valid(self, form):
         teacher_date = {}
-        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo'):
+        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo', 'father_name'):
             teacher_date[key] = form.cleaned_data.pop(key)
-        datelist = teacher_date['hire_date'].split('/')
-        jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
-        teacher_date['hire_date'] = jdata.togregorian()
         user = form.save()
         teacher = Teacher.objects.get(user=user)
-        teacher.hire_date = teacher_date['hire_date']
-        teacher.photo = teacher_date['photo']
-        teacher.profession = teacher_date['profession']
-        teacher.edu_degree = teacher_date['edu_degree']
-        teacher.teacher_id = teacher_date['teacher_id']
+        data_list = teacher_date['hire_date'].split('/')
+        j_data = jdatetime.date(year=int(data_list[0]), month=int(data_list[1]), day=int(data_list[2]))
+        teacher_date['hire_date'] = j_data.togregorian()
+        teacher.teacher_id =teacher_date['teacher_id']
+        teacher.hire_date =teacher_date['hire_date']
+        teacher.edu_degree =teacher_date['edu_degree']
+        teacher.profession.add(*teacher_date['profession'])
+        teacher.photo =teacher_date['photo']
+        teacher.father_name =teacher_date['father_name']
+        teacher.save()
         return super().form_valid(form)
 
     def get_success_url(self):

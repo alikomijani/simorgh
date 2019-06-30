@@ -6,6 +6,8 @@
 {% block dashboard-title %}
     مشخصات آموزگار {{ teacher.user.first_name }} {{ teacher.user.last_name }}
 {% endblock %}
+{% block filter-link %}{% url 'TeacherEdit' teacher.pk %}{% endblock %}
+{% block filter-name %}ویرایش اطلاعات{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-lg-12 m-auto">
