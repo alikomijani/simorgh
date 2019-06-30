@@ -10,15 +10,15 @@
 {% block filter-name %}استاد جدید{% endblock %}
 {% block content %}
 
-    <div class="col-sm-12">
+    <div class="col-sm-12" >
             <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">پروفایل اساتید</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="overflow: auto;height: 440px">
             <div class="row">
         {% for teacher in teacher_list %}
-            <div class="column col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-3">
+            <div class="column col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                 <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
                     <img src="{{ teacher.photo.url }}" alt="عکس پروفایل" style="width:100%">
                     <div class="container m-1">
