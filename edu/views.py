@@ -2,7 +2,7 @@ from django.shortcuts import render, reverse, redirect
 from django.utils.decorators import method_decorator
 
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse, ClassTime, \
-    StudentPresence
+    StudentPresence, LevelField
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
@@ -15,6 +15,16 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
+
+
+def first_setup(request):
+    for day in ('SA', 'SU', 'MO', 'TU', 'WE', 'TH', 'FR'):
+        for time in ('FI', 'SE', 'TH', 'FO'):
+            ClassTime.objects.get_or_create(class_day=day, class_time=time)
+    for level in ('1', '2', '3'):
+        for field in ('HU', 'MA', 'NA'):
+            LevelField.objects.get_or_create(level=level, field=field)
+    return render(request, 'edu/index.html', {"message": 'زمانبندی کلاس ها با موفقیت ایجاد شد'})
 
 
 def change_password(request):
@@ -204,16 +214,19 @@ class TeacherCreateView(CreateView):
     model = User
     form_class = TeacherForm
     template_name = 'edu/teacher_form.html'
-
     def form_valid(self, form):
         teacher_date = {}
-        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo'):
+        for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo', 'father_name'):
             teacher_date[key] = form.cleaned_data.pop(key)
-        user = form.save()
-        Teacher.objects.create(user=user, **teacher_date)
+        profession = teacher_date.pop('profession')
         group = Group.objects.get(name='teacher')
         user = form.save()
+        data_list = teacher_date['hire_date'].split('/')
+        j_data = jdatetime.date(year=int(data_list[0]), month=int(data_list[1]), day=int(data_list[2]))
+        teacher_date['hire_date'] = j_data.togregorian()
         group.user_set.add(user)
+        teacher = Teacher.objects.create(user=user, **teacher_date)
+        teacher.profession.add(*profession)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -224,12 +237,25 @@ class TeacherUpdateView(UpdateView):
     model = User
     form_class = TeacherForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['pk'] = self.kwargs['pk']
+        return kwargs
+
     def form_valid(self, form):
         teacher_date = {}
         for key in ('teacher_id', 'hire_date', 'edu_degree', 'profession', 'photo'):
             teacher_date[key] = form.cleaned_data.pop(key)
+        datelist = teacher_date['hire_date'].split('/')
+        jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
+        teacher_date['hire_date'] = jdata.togregorian()
         user = form.save()
-        Teacher.objects.create(user=user, **teacher_date)
+        teacher = Teacher.objects.get(user=user)
+        teacher.hire_date = teacher_date['hire_date']
+        teacher.photo = teacher_date['photo']
+        teacher.profession = teacher_date['profession']
+        teacher.edu_degree = teacher_date['edu_degree']
+        teacher.teacher_id = teacher_date['teacher_id']
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -240,7 +266,7 @@ class TeacherListView(ListView):
     # context_object_name = 'teachers'
     model = Teacher
     form_class = TeacherSearchForm
-
+    template_name = 'edu/teacher_list2.html'
     def get_context_data(self, **kwargs):
         context = super(TeacherListView, self).get_context_data(**kwargs)
         context.update({
@@ -260,13 +286,14 @@ class TeacherListView(ListView):
 
 class TeacherDetailView(DetailView):
     model = Teacher
+
     def get_context_data(self, **kwargs):
         context = super(TeacherDetailView, self).get_context_data(**kwargs)
         teacher = Teacher.objects.get(pk=self.kwargs['pk'])
-        teacher_class_courses = TeacherClassCourse.objects.filter(teacher =teacher)
+        teacher_class_courses = TeacherClassCourse.objects.filter(teacher=teacher)
 
         context.update({
-           'teacher_class_course':teacher_class_courses
+            'teacher_class_course': teacher_class_courses
         })
         class_day_time = {}
         for day in ('SA', 'SU', 'MO', 'TU', 'WE', 'TH', 'FR'):
@@ -276,7 +303,7 @@ class TeacherDetailView(DetailView):
 
         for tcc in teacher_class_courses:
             for time in tcc.class_times.all():
-                class_day_time[time.class_day][time.class_time] = (tcc.course.name,tcc.classroom)
+                class_day_time[time.class_day][time.class_time] = (tcc.course.name, tcc.classroom)
         class_day_time['شنبه'] = class_day_time.pop('SA')
         class_day_time['یکشنبه'] = class_day_time.pop('SU')
         class_day_time['دوشنبه'] = class_day_time.pop('MO')
@@ -289,6 +316,7 @@ class TeacherDetailView(DetailView):
             'class_day_time': class_day_time
         })
         return context
+
 
 # TeacherClassCourse CRUD
 class TeacherClassCourseDetailView(DetailView):
@@ -388,7 +416,9 @@ class RegisterCreate(CreateView):
 
     def form_valid(self, form):
         for course in form.cleaned_data['classroom'].courses.all():
+            print(course)
             student = form.cleaned_data['student']
+            print(student)
             StudentCourse.objects.get_or_create(course=course, student=student)
         return super(RegisterCreate, self).form_valid(form)
 

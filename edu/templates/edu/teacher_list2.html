@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block title %}
+    {{ user.get_full_name }} به سامانه سیمرغ خوش آمدید
+{% endblock %}
+{% block dashboard-title %}
+    لیست اساتید
+{% endblock %}
+{% block filter-link %}{% url 'TeacherCreateView' %}{% endblock %}
+{% block filter-name %}استاد جدید{% endblock %}
+{% block content %}
+
+    <div class="col-sm-12">
+            <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">پروفایل اساتید</h6>
+            </div>
+            <div class="card-body">
+            <div class="row">
+        {% for teacher in teacher_list %}
+            <div class="column col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-3">
+                <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+                    <img src="{{ teacher.photo.url }}" alt="عکس پروفایل" style="width:100%">
+                    <div class="container m-1">
+                        <h4 class="text-center mt-1">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h4>
+                        <p class="title">{{ teacher.efu_degree }}</p>
+                        <p class="text-center">
+                            تخصص:
+                            {% for pr in teacher.profession.all %}
+                                {{ pr }}
+                            {% endfor %}
+                        </p>
+                        <p class="text-center">
+                            <a href="mailto:{{ teacher.user.email }}"> {{ teacher.user.email }} </a></p>
+                        <p>
+                            <a class="btn btn-primary btn-user btn-block" href="{% url 'TeacherDetail' teacher.pk %}">
+                                مشاهده پروفایل</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        </div>
+        </div>
+        </div>
+
+{% endblock %}
+
+
+
+{#{% block filter_form %}#}
+{#    <form class="form">#}
+{#        {% csrf_token %}#}
+{##}
+{#        {{ search.non_field_errors }}#}
+{#        <div class="form-group">#}
+{#            {{ search.subject.errors }}#}
+{#            <label for="{{ search.first_name.id_for_label }}">نام: </label>#}
+{#            {{ search.first_name }}#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#            {{ search.message.errors }}#}
+{#            <label for="{{ search.last_name.id_for_label }}">نام خانوادگی: </label>#}
+{#            {{ search.last_name }}#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#            {{ search.sender.errors }}#}
+{#            <label for="{{ search.user_name.id_for_label }}">نام کاربری :</label>#}
+{#            {{ search.user_name }}#}
+{#        </div>#}
+{##}
+{##}
+{#        <div>#}
+{#            <button type="submit" class="btn btn-primary">جست و جو</button>#}
+{#        </div>#}
+{#    </form>#}
+{#{% endblock %}#}

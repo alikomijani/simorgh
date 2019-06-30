@@ -23,8 +23,8 @@ urlpatterns = [
 
 ]
 # student_course
-urlpatterns += [url(
-    r'^student_course/list/(?P<pk>[0-9]+)$', views.StudentCourseListView.as_view(), name='StudentCourseListView'),
+urlpatterns += [
+    url(r'^student_course/list/(?P<pk>[0-9]+)$', views.StudentCourseListView.as_view(), name='StudentCourseListView'),
 ]
 # student
 urlpatterns += [
@@ -80,4 +80,8 @@ urlpatterns += [
     url(r'^register/details/(?P<pk>[0-9]+)/$', views.RegisterDetail.as_view(), name='RegisterDetail'),
     url(r'^register/create/$', views.RegisterCreate.as_view(), name='RegisterCreate'),
     url(r'^register/edit/(?P<pk>[0-9]+)/$', views.RegisterUpdate.as_view(), name='RegisterUpdate'),
+]
+# class time
+urlpatterns += [
+    url(r'^first_setup/$', views.first_setup, name='first_setup'),
 ]

@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User, StudentCourse
 from django import forms
-import jdatetime
+import jdatetime,datetime
 
 
 class CourseForm(ModelForm):
@@ -27,8 +27,8 @@ class TeacherClassCourseForm(ModelForm):
 
 
 class TeacherForm(ModelForm):
-    teacher_id = forms.CharField(label='کد پرسنلی')
-    hire_date = forms.DateField(label='تاریخ استخدام')
+    teacher_id = forms.IntegerField(label='کد پرسنلی')
+    hire_date = forms.CharField(label='تاریخ استخدام',initial=datetime.date.today)
     profession = forms.ModelMultipleChoiceField(label='تخصص', queryset=(Course.objects.all()))
     edu_degree = forms.ChoiceField(label='مدرک تحصیلی', choices=Teacher.CHOICE_DEGREE)
     photo = forms.ImageField(label='تصویر پروفایل')
@@ -49,26 +49,33 @@ class TeacherForm(ModelForm):
             "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز میباشد.",
             "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
         }
+        widgets = {
+            'password': forms.PasswordInput,
+        }
 
     def __init__(self, *args, **kwargs):
+        pk = None
+        if 'pk' in kwargs.keys():
+            pk = kwargs.pop('pk')
         super(TeacherForm, self).__init__(*args, **kwargs)
+        if pk is not None:
+            teacher = Teacher.objects.get(pk=pk)
+            jdata = jdatetime.date.fromgregorian(year=teacher.hire_date.year, month=teacher.hire_date.month,
+                                                 day=teacher.hire_date.day)
+            self.fields['teacher_id'].initial = teacher.teacher_id
+            self.fields['hire_date'].initial = jdata.togregorian()
+            self.fields['profession'].initial = teacher.profession.all()
+            self.fields['edu_degree'].initial = teacher.edu_degree
+            self.fields['photo'].initial = teacher.photo
+            self.fields['father_name'].initial = teacher.father_name
+
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
             if visible.name is 'photo':
                 visible.field.widget.attrs['class'] = 'form-control-file border'
+            elif visible.name is 'hire_date':
+                visible.field.widget.attrs['class'] = 'form-control datePicker'
             else:
                 visible.field.widget.attrs['class'] = 'form-control'
-
-
-class ClassroomForm(ModelForm):
-    class Meta:
-        model = Classroom
-        exclude = ['courses', 'teachers']
-
-    def __init__(self, *args, **kwargs):
-        super(ClassroomForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
 
 
 class StudentForm(ModelForm):
@@ -80,21 +87,21 @@ class StudentForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'is_active', 'email', 'password']
+        fields = ['first_name', 'last_name', 'username', 'password', 'email', 'is_active']
         labels = {
             "username": "نام کاربری",
             "first_name": "نام",
             "last_name": "نام خانوادگی",
             "is_active": "فعال",
             "email": "پست الکترونیک",
-            "password": "کلمه عبور",
+            "password": "کلمه عبور"
+        }
+        help_texts = {
+            "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز میباشد.",
+            "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
         }
         widgets = {
             'password': forms.PasswordInput,
-        }
-        help_texts = {
-            "username": "حداکثر ۱۵۰ کارکتر. استفاده از حروف، اعداد و کارکترهای @+-_ مجاز می‌باشد.",
-            "is_active": "تصمیم بگیرید کاربر فعال باشد و یا خیر، بجای حذف کاربر از این گزینه استفاده نمایید.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -119,6 +126,17 @@ class StudentForm(ModelForm):
                 visible.field.widget.attrs['class'] = 'form-control datePicker'
             else:
                 visible.field.widget.attrs['class'] = 'form-control'
+
+
+class ClassroomForm(ModelForm):
+    class Meta:
+        model = Classroom
+        exclude = ['courses', 'teachers']
+
+    def __init__(self, *args, **kwargs):
+        super(ClassroomForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
 
 
 class StudentSearchForm(forms.Form):

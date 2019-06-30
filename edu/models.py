@@ -66,7 +66,7 @@ class Teacher(Person, models.Model):
         (DIPLOMA, 'دیپلم'),
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
-    profession = models.ManyToManyField('Course', verbose_name='تخصص')
+    profession = models.ManyToManyField('Course', verbose_name='تخصص',null=True,blank=True)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
