@@ -240,6 +240,7 @@ class TeacherCreateView(CreateView):
 class TeacherUpdateView(UpdateView):
     model = User
     form_class = TeacherForm
+    template_name = 'edu/teacher_form.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
