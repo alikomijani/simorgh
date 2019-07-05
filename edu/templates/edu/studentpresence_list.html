@@ -8,8 +8,7 @@
 {% endblock %}
 
 {% block tabel_title %}جدول اطلاعات دانش آموزان {% endblock %}
-{% block tabel_new_item_link %}{% url 'StudentCreateView' %}{% endblock %}
-{% block tabel_new_item %} ثبت دانش آموز جدید{% endblock %}
+
 {% block tabel_header %}
     <th style="width:25px;">ردیف</th>
     <th>شماره دانش آموزی</th>
@@ -22,8 +21,6 @@
     <th>شماره دانش آموزی</th>
     <th>نام</th>
     <th>نام خانوادگی</th>
-
-
 {% endblock %}
 {% block tabel_body %}
     {% for presence in studentpresence_list %}
@@ -32,7 +29,6 @@
             <td>{{ presence.student_course.student.student_id }}</td>
             <td>{{ presence.student_course.student.first_name }}</td>
             <td>{{ presence.student_course.student.last_name }}</td>
-
 
             </td>
         </tr>

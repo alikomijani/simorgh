@@ -66,7 +66,7 @@ class Teacher(Person, models.Model):
         (DIPLOMA, 'دیپلم'),
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
-    profession = models.ManyToManyField('Course', verbose_name='تخصص',null=True,blank=True)
+    profession = models.ManyToManyField('Course', verbose_name='تخصص', null=True, blank=True)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -151,7 +151,8 @@ class StudentCourse(models.Model):
 class Register(models.Model):
     classroom = models.ForeignKey('Classroom', related_name='registers', on_delete=models.SET_NULL, null=True)
     student = models.ForeignKey('Student', related_name='registers', on_delete=models.SET_NULL, null=True)
-    is_active = models.BooleanField(verbose_name='فعال', help_text='برای غیرفعال کردن کلاس از این گزینه استفاده کنید',default=True)
+    is_active = models.BooleanField(verbose_name='فعال', help_text='برای غیرفعال کردن کلاس از این گزینه استفاده کنید',
+                                    default=True)
 
 
 class TeacherClassCourse(models.Model):
@@ -178,7 +179,7 @@ class ClassTime(models.Model):
         (FRIDAY, 'جمعه'),
     )
     class_day = models.CharField(max_length=2, choices=CHOICE_DAY, verbose_name='روز کلاس', blank=True, null=True)
-    FIRST, SECOND, THIRD, FORTH= 'FI', 'SE', 'TH', 'FO'
+    FIRST, SECOND, THIRD, FORTH = 'FI', 'SE', 'TH', 'FO'
     CHOICE_TIME = (
         (FIRST, 'زنگ اول'),
         (SECOND, 'زنگ دوم'),
@@ -189,15 +190,18 @@ class ClassTime(models.Model):
 
     def __str__(self):
         return self.get_class_day_display() + ' ' + self.get_class_time_display()
+
     @property
     def time(self):
         return self.get_class_time_display()
+
     @property
     def day(self):
         return self.get_class_day_display()
 
+
 class StudentPresence(models.Model):
     student_course = models.ForeignKey('StudentCourse', on_delete=models.CASCADE)
     presence = models.BooleanField(verbose_name='حاضر')
-    data = models.DateField('تاریخ')
+    data = models.DateField('تاریخ',default=datetime.today().date())
     class_time = models.ForeignKey('ClassTime', on_delete=models.SET_NULL, null=True)
