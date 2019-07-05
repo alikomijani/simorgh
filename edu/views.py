@@ -107,8 +107,8 @@ class StudentCreateView(CreateView):
         for key in ('student_id', 'birthday', 'photo', 'father_name', 'education_field'):
             student_data[key] = form.cleaned_data.pop(key)
         datelist = student_data['birthday'].split('/')
-        jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
-        student_data['birthday'] = jdata.togregorian()
+        jdate = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
+        student_data['birthday'] = jdate.togregorian()
         group = Group.objects.get(name='student')
         user = form.save()
         group.user_set.add(user)
@@ -196,8 +196,8 @@ class StudentUpdateView(UpdateView):
         for key in ('student_id', 'birthday', 'photo', 'father_name', 'education_field'):
             student_data[key] = form.cleaned_data.pop(key)
         datelist = student_data['birthday'].split('/')
-        jdata = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
-        student_data['birthday'] = jdata.togregorian()
+        jdate = jdatetime.date(year=int(datelist[0]), month=int(datelist[1]), day=int(datelist[2]))
+        student_data['birthday'] = jdate.togregorian()
         user = form.save()
         student = Student.objects.get(user=user)
         student.birthday = student_data['birthday']
@@ -226,9 +226,9 @@ class TeacherCreateView(CreateView):
         profession = teacher_date.pop('profession')
         group = Group.objects.get(name='teacher')
         user = form.save()
-        data_list = teacher_date['hire_date'].split('/')
-        j_data = jdatetime.date(year=int(data_list[0]), month=int(data_list[1]), day=int(data_list[2]))
-        teacher_date['hire_date'] = j_data.togregorian()
+        date_list = teacher_date['hire_date'].split('/')
+        j_date = jdatetime.date(year=int(date_list[0]), month=int(date_list[1]), day=int(date_list[2]))
+        teacher_date['hire_date'] = j_date.togregorian()
         group.user_set.add(user)
         teacher = Teacher.objects.create(user=user, **teacher_date)
         teacher.profession.add(*profession)
@@ -254,9 +254,9 @@ class TeacherUpdateView(UpdateView):
             teacher_date[key] = form.cleaned_data.pop(key)
         user = form.save()
         teacher = Teacher.objects.get(user=user)
-        data_list = teacher_date['hire_date'].split('/')
-        j_data = jdatetime.date(year=int(data_list[0]), month=int(data_list[1]), day=int(data_list[2]))
-        teacher_date['hire_date'] = j_data.togregorian()
+        date_list = teacher_date['hire_date'].split('/')
+        j_date = jdatetime.date(year=int(date_list[0]), month=int(date_list[1]), day=int(date_list[2]))
+        teacher_date['hire_date'] = j_date.togregorian()
         teacher.teacher_id = teacher_date['teacher_id']
         teacher.hire_date = teacher_date['hire_date']
         teacher.edu_degree = teacher_date['edu_degree']
@@ -462,7 +462,7 @@ class StudentPresenceList(ListView):
     model = StudentPresence
 
 
-class StudentPresenceCreateView(UserPassesTestMixin, CreateView):
+class StudentPresenceCreateView(CreateView):
     model = StudentPresence
     form_class = StudentPresenceForm
 
@@ -481,19 +481,6 @@ class StudentPresenceCreateView(UserPassesTestMixin, CreateView):
         context['formset'] = StudentPresenceFormset()
         context['students'] = [student_course.student for student_course in student_course_list]
         return context
-
-    def test_func(self):
-        # if Group.objects.get(name='student') in self.request.user.groups.all():
-        #     register = Register.objects.get(student=self.request.user.student, is_active=True)
-        #     tcc_list = TeacherClassCourse.objects.filter(classroom=register.classroom)
-        #     tcc_id_list = [tcc.id for tcc in tcc_list]
-        #     if int(self.kwargs['pk']) in tcc_id_list:
-        #         print(True)
-        #         return True
-        # else:
-        #     if self.request.user.is_authenticated():
-        #         raise Http404("شما نمی توانید در این نظرسنجی شرکت کنید.")
-        return True
 
     def post(self, request, *args, **kwargs):
         formset = StudentPresenceFormset(request.POST)
@@ -514,22 +501,9 @@ class StudentPresenceCreateView(UserPassesTestMixin, CreateView):
         return HttpResponseRedirect('/dashboard/activity/presence/{}/create'.format(self.kwargs['pk_tcc']))
 
 
-class StudentPresenceListView(UserPassesTestMixin, ListView):
+class StudentPresenceListView(ListView):
     model = StudentPresence
     template_name = 'edu/studentpresence_list.html'
-
-    def test_func(self):
-        # if Group.objects.get(name='student') in self.request.user.groups.all():
-        #     register = Register.objects.get(student=self.request.user.student, is_active=True)
-        #     tcc_list = TeacherClassCourse.objects.filter(classroom=register.classroom)
-        #     tcc_id_list = [tcc.id for tcc in tcc_list]
-        #     if int(self.kwargs['pk']) in tcc_id_list:
-        #         print(True)
-        #         return True
-        # else:
-        #     if self.request.user.is_authenticated():
-        #         raise Http404("شما نمی توانید در این نظرسنجی شرکت کنید.")
-        return True
 
     def get_student_course_list(self):
         pk_tcc = self.kwargs.get('pk_tcc', '')
@@ -551,7 +525,7 @@ class StudentPresenceListView(UserPassesTestMixin, ListView):
         teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
         context['tcc'] = teacher_class_course
         presence_list = context['object_list']
-        date_list = presence_list.order_by().values('data').distinct()
+        date_list = presence_list.order_by().values('date').distinct()
         student_course_list = self.get_student_course_list()
         presence_date_list = []
         for student_course in student_course_list:
@@ -566,7 +540,7 @@ class StudentPresenceListView(UserPassesTestMixin, ListView):
                     presence_date['student_presence_list'].append(None)
             presence_date_list.append(presence_date)
         context['presence_date_list'] = presence_date_list
-        date_list = [jdatetime.date.fromgregorian(date=date['data']) for date in date_list]
-        print(date_list)
+        date_list = [jdatetime.date.fromgregorian(date=date['date']) for date in date_list]
+        print(presence_date_list)
         context['date_list'] = date_list
         return context

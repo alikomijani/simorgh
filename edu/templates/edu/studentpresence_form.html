@@ -26,7 +26,6 @@
                     <th>ردیف</th>
                     <th>دانش آموز</th>
                     <th>حضور</th>
-                    <th>تاریخ</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -35,7 +34,6 @@
                         <td style="max-width: 20px;">{{ forloop.counter }}</td>
                         <td style="max-width: 100px;">{{ students|list_item:forloop.counter0 }}</td>
                         <td style="max-width: 100px;">{{ form.presence }}</td>
-                        <td style="max-width: 100px;">{{ form.data }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -44,7 +42,6 @@
                     <th>ردیف</th>
                     <th>دانش آموز</th>
                     <th>حضور</th>
-                    <th>تاریخ</th>
                 </tr>
                 </tfoot>
             </table>

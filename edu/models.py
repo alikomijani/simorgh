@@ -203,5 +203,5 @@ class ClassTime(models.Model):
 class StudentPresence(models.Model):
     student_course = models.ForeignKey('StudentCourse', on_delete=models.CASCADE)
     presence = models.BooleanField(verbose_name='حاضر')
-    data = models.DateField('تاریخ',default=datetime.today().date())
+    date = models.DateField('تاریخ',)
     class_time = models.ForeignKey('ClassTime', on_delete=models.SET_NULL, null=True)

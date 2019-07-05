@@ -226,7 +226,7 @@ class StudentCourseForm(ModelForm):
 class StudentPresenceForm(forms.ModelForm):
     class Meta:
         model = StudentPresence
-        fields = ['presence','data']
+        fields = ['presence']
 
 
 StudentPresenceFormset = formset_factory(StudentPresenceForm)
