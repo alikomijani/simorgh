@@ -5,12 +5,12 @@ from django.shortcuts import render, reverse, redirect
 from django.utils.decorators import method_decorator
 import datetime
 from .models import Student, Teacher, Classroom, TeacherClassCourse, Course, Register, StudentCourse, ClassTime, \
-    StudentPresence, LevelField
+    StudentPresence, LevelField, TeacherPresence
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
     TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm, StudentCourseForm, \
-    StudentPresenceFormset, StudentPresenceForm, StudentCourseFormset
+    StudentPresenceFormset, StudentPresenceForm, StudentCourseFormset, TeacherPresenceForm, TeacherPresenceFormset
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import user_passes_test, login_required
 import jdatetime
@@ -19,6 +19,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
+
 
 # run for setup first setting and register courses
 def first_setup(request):
@@ -222,7 +223,7 @@ class StudentDetailView(DetailView):
             for tcc in teacher_class_courses:
                 print(student)
                 print(tcc.course)
-                sc=StudentCourse.objects.filter(course=tcc.course,student=student).first()
+                sc = StudentCourse.objects.filter(course=tcc.course, student=student).first()
                 if sc is not None:
                     tcc.mid_grade = sc.mid_grade
                     tcc.final_grade = sc.final_grade
@@ -585,6 +586,36 @@ class StudentCourseUpdateView(CreateView):
         return HttpResponseRedirect('/student_course/update/{}'.format(self.kwargs['pk_tcc']))
 
 
+class TeacherPresenceCreateView(CreateView):
+    model = TeacherPresence
+    form_class = TeacherPresenceForm
+    tcc_list = None
+
+    def get_context_data(self, **kwargs):
+        context = super(TeacherPresenceCreateView, self).get_context_data(**kwargs)
+        self.tcc_list = TeacherClassCourse.objects.filter(class_time__day=ClassTime.objects.get(pk=self.kwargs['pk']))
+        TeacherPresenceFormset = formset_factory(TeacherPresenceForm, extra=len(self.tcc_list))
+        context['formset'] = TeacherPresenceFormset()
+        context['teacher_list'] = self.tcc_list
+        return context
+
+    def post(self, request, *args, **kwargs):
+        formset = TeacherPresenceFormset(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+
+    def form_valid(self, formset):
+        if formset.is_valid():
+            for i, form in enumerate(formset.forms):
+                teacher_presence = form.save(commit=False)
+                teacher_presence.teacher_class_course = self.tcc_list[i]
+                teacher_presence.date = datetime.date.today()
+                teacher_presence.class_time = ClassTime.objects.get(pk=self.kwargs['pk'])
+
+            return HttpResponseRedirect('/dashboard/activity/presence/{}'.format(self.kwargs['pk_tcc']))
+        return HttpResponseRedirect('/dashboard/activity/presence/{}/create'.format(self.kwargs['pk_tcc']))
+
+
 class StudentPresenceCreateView(CreateView):
     model = StudentPresence
     form_class = StudentPresenceForm
@@ -620,8 +651,8 @@ class StudentPresenceCreateView(CreateView):
                 student_presence.date = datetime.date.today()
                 student_presence.student_course = student_course_list[i]
                 student_presence.save()
-            return HttpResponseRedirect('/dashboard/activity/presence/{}'.format(self.kwargs['pk_tcc']))
-        return HttpResponseRedirect('/dashboard/activity/presence/{}/create'.format(self.kwargs['pk_tcc']))
+            return reverse('StudentCourseListView', self.kwargs['pk_tcc'])
+        return reverse('StudentCourseUpdateView', self.kwargs['pk_tcc'])
 
 
 class StudentPresenceListView(ListView):
@@ -667,4 +698,3 @@ class StudentPresenceListView(ListView):
         print(presence_date_list)
         context['date_list'] = date_list
         return context
-
