@@ -56,7 +56,7 @@
         </div>
 
         {#برنامه کلاسی#}
-        <div class="col-lg-7">
+        <div class="col-lg-12">
             <div class="card shadow mb-4 ">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">برنامه کلاسی</h6>
@@ -82,7 +82,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
+        <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">لیست کلاس های ثبت نام شده</h6>
@@ -94,6 +94,8 @@
                             <th>نام کلاس</th>
                             <th width="100px">تعداد واحد</th>
                             <th>استاد</th>
+                            <th>نمره میان ترم</th>
+                            <th>نمره نهایی</th>
                         </tr>
                         {% for tcc in teacher_class_courses %}
 
@@ -102,6 +104,8 @@
                                 <td>{{ tcc.course }}</td>
                                 <td>{{ tcc.course.unit }}</td>
                                 <td>{{ tcc.teacher }}</td>
+                                <td>{{ tcc.mid_grade }}</td>
+                                <td>{{ tcc.final_grade }}</td>
                             </tr>
                         {% endfor %}
                     </table>

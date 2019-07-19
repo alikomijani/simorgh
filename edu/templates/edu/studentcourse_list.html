@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block tabel_title %}جدول نمرات دانش آموزان {% endblock %}
-{% block tabel_new_item_link %}{% url 'StudentCreateView' %}{% endblock %}
+{% block tabel_new_item_link %}{% url 'StudentCourseUpdateView' pk %}{% endblock %}
 {% block tabel_new_item %} ثبت نمره {% endblock %}
 {% block tabel_header %}
     <th style="width:25px;">ردیف</th>
@@ -34,7 +34,7 @@
             <td>{{ stcourse.student.user.first_name }}</td>
             <td>{{ stcourse.student.user.last_name }}</td>
             <td>{{ stcourse.mid_grade }}</td>
-            <td>{{ stcourse.final_grade_grade }}</td>
+            <td>{{ stcourse.final_grade}}</td>
         </tr>
     {% endfor %}
 {% endblock %}

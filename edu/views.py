@@ -10,7 +10,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.db.models import Q
 from .forms import TeacherSearchForm, StudentSearchForm, StudentForm, UserSearchForm, TeacherForm, \
     TeacherClassCourseForm, CourseForm, ClassroomForm, RegisterForm, UserForm, StudentCourseForm, \
-    StudentPresenceFormset, StudentPresenceForm
+    StudentPresenceFormset, StudentPresenceForm, StudentCourseFormset
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import user_passes_test, login_required
 import jdatetime
@@ -219,6 +219,16 @@ class StudentDetailView(DetailView):
         if student.registers.first() is not None:
             classroom = student.registers.first().classroom
             teacher_class_courses = TeacherClassCourse.objects.filter(classroom=classroom)
+            for tcc in teacher_class_courses:
+                print(student)
+                print(tcc.course)
+                sc=StudentCourse.objects.filter(course=tcc.course,student=student).first()
+                if sc is not None:
+                    tcc.mid_grade = sc.mid_grade
+                    tcc.final_grade = sc.final_grade
+                else:
+                    tcc.mid_grade = 'sc.mid_grade'
+                    tcc.final_grade = 'final_grade'
             context.update({
                 'teacher_class_courses': teacher_class_courses
             })
@@ -334,7 +344,6 @@ class TeacherUpdateView(UpdateView):
 
 
 class TeacherListView(ListView):
-    # context_object_name = 'teachers'
     model = Teacher
     form_class = TeacherSearchForm
     template_name = 'edu/teacher_list2.html'
@@ -509,6 +518,11 @@ class RegisterList(ListView):
 class StudentCourseListView(ListView):
     model = StudentCourse
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(StudentCourseListView, self).get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        return context
+
     def get_queryset(self):
         pk = self.kwargs['pk']
         queryset = super().get_queryset()
@@ -523,6 +537,52 @@ def error_404_view(request, exception):
 
 class StudentPresenceList(ListView):
     model = StudentPresence
+
+
+class StudentCourseUpdateView(CreateView):
+    model = StudentCourse
+    form_class = StudentCourseForm
+
+    def get_queryset(self):
+        pk_tcc = self.kwargs.get('pk_tcc', '')
+        teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+        queryset = (StudentCourse.objects.filter(
+            course=teacher_class_course.course, student__registers__classroom=teacher_class_course.classroom
+        ))
+        return queryset
+
+    def get_student_course_list(self):
+        pk_tcc = self.kwargs.get('pk_tcc', '')
+        teacher_class_course = TeacherClassCourse.objects.get(id=pk_tcc)
+        queryset = list(StudentCourse.objects.filter(
+            course=teacher_class_course.course, student__registers__classroom=teacher_class_course.classroom
+        ))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentCourseUpdateView, self).get_context_data(**kwargs)
+        student_course_list = self.get_student_course_list()
+        StudentCourseFormset = formset_factory(StudentCourseForm, extra=len(student_course_list))
+        context['formset'] = StudentCourseFormset()
+        context['students'] = [student_course.student for student_course in student_course_list]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        formset = StudentCourseFormset(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+
+    def form_valid(self, formset):
+        if formset.is_valid():
+            student_course_list = self.get_student_course_list()
+            for i, form in enumerate(formset.forms):
+                print(student_course_list[i])
+                # student_course_list[i].update(mid_grade=form.cleaned_data['mid_grade'], final_grade=form.cleaned_data['final_grade'])
+                student_course_list[i].mid_grade = form.cleaned_data['mid_grade']
+                student_course_list[i].final_grade = form.cleaned_data['final_grade']
+                student_course_list[i].save()
+            return HttpResponseRedirect('/student_course/list/{}'.format(self.kwargs['pk_tcc']))
+        return HttpResponseRedirect('/student_course/update/{}'.format(self.kwargs['pk_tcc']))
 
 
 class StudentPresenceCreateView(CreateView):

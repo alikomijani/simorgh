@@ -3,7 +3,7 @@ from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Reg
     StudentPresence
 from django import forms
 import jdatetime, datetime
-
+from django.forms.models import inlineformset_factory
 
 class CourseForm(ModelForm):
     class Meta:
@@ -217,10 +217,10 @@ class UserForm(ModelForm):
                 visible.field.widget.attrs['class'] = 'custom-control custom-checkbox'
 
 
-class StudentCourseForm(ModelForm):
+class StudentCourseForm(forms.ModelForm):
     class Meta:
         model = StudentCourse
-        fields = "__all__"
+        fields = ["final_grade",'mid_grade']
 
 
 class StudentPresenceForm(forms.ModelForm):
@@ -230,3 +230,4 @@ class StudentPresenceForm(forms.ModelForm):
 
 
 StudentPresenceFormset = formset_factory(StudentPresenceForm)
+StudentCourseFormset = formset_factory(StudentCourseForm)

@@ -25,6 +25,13 @@ urlpatterns = [
 # student_course
 urlpatterns += [
     url(r'^student_course/list/(?P<pk>[0-9]+)$', views.StudentCourseListView.as_view(), name='StudentCourseListView'),
+    url(r'^student_course/update/(?P<pk_tcc>[0-9]+)$', views.StudentCourseUpdateView.as_view(),
+    name='StudentCourseUpdateView'),
+]
+# StudentCourse
+urlpatterns += [
+
+
 ]
 # student
 urlpatterns += [

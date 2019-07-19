@@ -146,7 +146,8 @@ class StudentCourse(models.Model):
                                blank=True)
     final_grade = models.FloatField(null=True, blank=True)
     mid_grade = models.FloatField(null=True, blank=True)
-
+    def __str__(self):
+        return self.student.__str__() + self.course.__str__()
 
 class Register(models.Model):
     classroom = models.ForeignKey('Classroom', related_name='registers', on_delete=models.SET_NULL, null=True)
