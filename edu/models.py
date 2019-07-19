@@ -66,7 +66,7 @@ class Teacher(Person, models.Model):
         (DIPLOMA, 'دیپلم'),
     )
     edu_degree = models.CharField(max_length=2, choices=CHOICE_DEGREE, verbose_name='مدرک تحصیلی')
-    profession = models.ManyToManyField('Course', verbose_name='تخصص', null=True, blank=True)
+    profession = models.ManyToManyField('Course', verbose_name='تخصص', blank=True)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -81,13 +81,13 @@ class Teacher(Person, models.Model):
 
 
 class LevelField(models.Model):
-    FIRST, SECOND, THIRD = '1', '2', '3',
+    FIRST, SECOND, THIRD = '10', '11', '12',
     CHOICE_LEVEL = (
-        (FIRST, 'پایه اول'),
-        (SECOND, 'پایه دوم'),
-        (THIRD, 'پایه سوم'),
+        (FIRST, 'پایه دهم'),
+        (SECOND, 'پایه یازدهم'),
+        (THIRD, 'پایه دوازدهم'),
     )
-    level = models.CharField(max_length=1, choices=CHOICE_LEVEL, verbose_name='پایه تحصیلی')
+    level = models.CharField(max_length=2, choices=CHOICE_LEVEL, verbose_name='پایه تحصیلی')
     HUMANITY, MATH, NATURAL = 'HU', 'MA', 'NA'
     CHOICE_FIELD = (
         (HUMANITY, 'علوم انسانی'),
@@ -127,7 +127,7 @@ class Classroom(models.Model):
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=20, verbose_name='نام درس')
+    name = models.CharField(max_length=100, verbose_name='نام درس')
     unit = models.IntegerField(null=True, verbose_name='تعداد واحد')
     level_field = models.ForeignKey('LevelField', on_delete=models.SET_NULL, null=True, verbose_name='مقطع تحصیلی')
 
