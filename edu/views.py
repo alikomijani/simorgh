@@ -20,7 +20,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 check_admin = user_passes_test(lambda u: Group.objects.get(name='admin') in u.groups.all())
 
-
+# run for setup first setting and register courses
 def first_setup(request):
     for day in ('SA', 'SU', 'MO', 'TU', 'WE', 'TH', 'FR'):
         for time in ('FI', 'SE', 'TH', 'FO'):

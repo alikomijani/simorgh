@@ -146,8 +146,10 @@ class StudentCourse(models.Model):
                                blank=True)
     final_grade = models.FloatField(null=True, blank=True)
     mid_grade = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return self.student.__str__() + self.course.__str__()
+
 
 class Register(models.Model):
     classroom = models.ForeignKey('Classroom', related_name='registers', on_delete=models.SET_NULL, null=True)
@@ -203,6 +205,13 @@ class ClassTime(models.Model):
 
 class StudentPresence(models.Model):
     student_course = models.ForeignKey('StudentCourse', on_delete=models.CASCADE)
-    presence = models.BooleanField(verbose_name='حاضر')
-    date = models.DateField('تاریخ',)
+    presence = models.BooleanField(verbose_name='حضور')
+    date = models.DateField('تاریخ', )
     class_time = models.ForeignKey('ClassTime', on_delete=models.SET_NULL, null=True)
+
+
+class TeacherPresence(models.Model):
+   teacher_class_course = models.ForeignKey('TeacherClassCourse',on_delete=models.CASCADE)
+   presence = models.BooleanField(verbose_name='حضور')
+   date = models.DateField('تاریخ', )
+   class_time = models.ForeignKey('ClassTime',on_delete=models.CASCADE)
