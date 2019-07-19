@@ -667,3 +667,4 @@ class StudentPresenceListView(ListView):
         print(presence_date_list)
         context['date_list'] = date_list
         return context
+

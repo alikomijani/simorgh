@@ -1,9 +1,10 @@
 from django.forms import ModelForm, formset_factory
 from .models import Student, Teacher, TeacherClassCourse, Course, Classroom, Register, User, StudentCourse, \
-    StudentPresence
+    StudentPresence, TeacherPresence
 from django import forms
 import jdatetime, datetime
 from django.forms.models import inlineformset_factory
+
 
 class CourseForm(ModelForm):
     class Meta:
@@ -220,7 +221,7 @@ class UserForm(ModelForm):
 class StudentCourseForm(forms.ModelForm):
     class Meta:
         model = StudentCourse
-        fields = ["final_grade",'mid_grade']
+        fields = ["final_grade", 'mid_grade']
 
 
 class StudentPresenceForm(forms.ModelForm):
@@ -229,5 +230,12 @@ class StudentPresenceForm(forms.ModelForm):
         fields = ['presence']
 
 
+class TeacherPresenceForm(forms.ModelForm):
+    class Meta:
+        model = TeacherPresence
+        fields = ['presence']
+
+
 StudentPresenceFormset = formset_factory(StudentPresenceForm)
 StudentCourseFormset = formset_factory(StudentCourseForm)
+TeacherPresenceFormset = formset_factory(TeacherPresenceForm)
