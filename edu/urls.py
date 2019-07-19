@@ -26,11 +26,13 @@ urlpatterns = [
 urlpatterns += [
     url(r'^student_course/list/(?P<pk>[0-9]+)$', views.StudentCourseListView.as_view(), name='StudentCourseListView'),
     url(r'^student_course/update/(?P<pk_tcc>[0-9]+)$', views.StudentCourseUpdateView.as_view(),
-    name='StudentCourseUpdateView'),
+        name='StudentCourseUpdateView'),
 ]
-# StudentCourse
+# Teacher Presence
 urlpatterns += [
-
+    url(r'^teacher_presence/create/(?P<pk>[0-9]+)$', views.TeacherPresenceCreateView.as_view(),
+        name='TeacherPresenceCreateView'),
+    # url(r'^teacher_presence/view/$', views.StudentCreateView.as_view(), name='TeacherPresenceListView'),
 
 ]
 # student

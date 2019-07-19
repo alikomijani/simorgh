@@ -578,7 +578,6 @@ class StudentCourseUpdateView(CreateView):
             student_course_list = self.get_student_course_list()
             for i, form in enumerate(formset.forms):
                 print(student_course_list[i])
-                # student_course_list[i].update(mid_grade=form.cleaned_data['mid_grade'], final_grade=form.cleaned_data['final_grade'])
                 student_course_list[i].mid_grade = form.cleaned_data['mid_grade']
                 student_course_list[i].final_grade = form.cleaned_data['final_grade']
                 student_course_list[i].save()
@@ -611,10 +610,9 @@ class TeacherPresenceCreateView(CreateView):
                 teacher_presence.teacher_class_course = self.tcc_list[i]
                 teacher_presence.date = datetime.date.today()
                 teacher_presence.class_time = ClassTime.objects.get(pk=self.kwargs['pk'])
-
-            return HttpResponseRedirect('/dashboard/activity/presence/{}'.format(self.kwargs['pk_tcc']))
-        return HttpResponseRedirect('/dashboard/activity/presence/{}/create'.format(self.kwargs['pk_tcc']))
-
+                teacher_presence.save()
+            return HttpResponseRedirect('/student_course/list/{}'.format(self.kwargs['pk']))
+        return HttpResponseRedirect('/student_course/update/{}'.format(self.kwargs['pk']))
 
 class StudentPresenceCreateView(CreateView):
     model = StudentPresence
